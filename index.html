@@ -1,4 +1,525 @@
-<!DOCTYPE html>
+<script>
+        // Bot Contact Variables
+        let currentStep = 1;
+        let userData = {};
+        let isTyping = false;
+
+        const steps = {
+            1: { title: 'Secteur d\'intervention', progress: 12 },
+            2: { title: 'Budget prévu', progress: 25 },
+            3: { title: 'Délai avant signature', progress: 37 },
+            4: { title: 'Localisation', progress: 50 },
+            5: { title: 'Nom complet', progress: 62 },
+            6: { title: 'Numéro de téléphone', progress: 75 },
+            7: { title: 'Adresse email', progress: 87 },
+            8: { title: 'Description du projet', progress: 100 }
+        };
+
+        function updateProgress() {
+            const indicator = document.getElementById('stepIndicator');
+            const progressFill = document.getElementById('progressFill');
+            
+            indicator.textContent = `Étape ${currentStep}/8 - ${steps[currentStep].title}`;
+            progressFill.style.width = `${steps[currentStep].progress}%`;
+        }
+
+        function scrollToBottom() {
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function showTyping() {
+            if (isTyping) return;
+            isTyping = true;
+            document.getElementById('typingIndicator').style.display = 'block';
+            scrollToBottom();
+        }
+
+        function hideTyping() {
+            isTyping = false;
+            document.getElementById('typingIndicator').style.display = 'none';
+        }
+
+        function addMessage(content, isUser = false) {
+            const chatMessages = document.getElementById('chatMessages');
+            const typingIndicator = document.getElementById('typingIndicator');
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+            
+            messageDiv.innerHTML = `
+                <div class="message-avatar">${isUser ? 'V' : 'Y²'}</div>
+                <div class="message-content">
+                    ${content}
+                </div>
+            `;
+            
+            chatMessages.insertBefore(messageDiv, typingIndicator);
+            scrollToBottom();
+        }
+
+        function botType(message, callback = null) {
+            showTyping();
+            setTimeout(() => {
+                hideTyping();
+                addMessage(message);
+                if (callback) callback();
+            }, 1500 + Math.random() * 1000);
+        }
+
+        function showQuickReplies(replies) {
+            const quickReplies = document.getElementById('quickReplies');
+            quickReplies.innerHTML = '';
+            
+            replies.forEach(reply => {
+                const button = document.createElement('div');
+                button.className = 'quick-reply';
+                button.innerHTML = reply.html;
+                button.onclick = reply.action;
+                quickReplies.appendChild(button);
+            });
+            
+            quickReplies.style.display = 'flex';
+            document.getElementById('chatInputContainer').style.display = 'none';
+        }
+
+        function showChatInput(placeholder = "Tapez votre réponse...") {
+            document.getElementById('quickReplies').style.display = 'none';
+            document.getElementById('chatInputContainer').style.display = 'block';
+            const input = document.getElementById('chatInput');
+            input.placeholder = placeholder;
+            input.focus();
+        }
+
+        // Style spécial pour les boutons initiaux (secteurs)
+        function showInitialSectors() {
+            const quickReplies = document.getElementById('quickReplies');
+            quickReplies.style.display = 'grid';
+            quickReplies.style.gridTemplateColumns = '1fr 1fr';
+            quickReplies.style.gridTemplateRows = '1fr 1fr';
+            quickReplies.style.gap = '1rem 1rem';
+            quickReplies.style.justifyItems = 'center';
+            quickReplies.style.alignItems = 'center';
+            quickReplies.style.flexDirection = 'initial';
+            quickReplies.style.padding = '2rem';
+        }
+
+        function selectSector(sector) {
+            const sectorNames = {
+                'automobile': 'Automobile (BMW, Mercedes, Audi, Porsche)',
+                'immobilier': 'Immobilier (Villas, appartements)',
+                'renovation': 'Rénovation (Cuisines, salles de bains)',
+                'moto': 'Moto (Harley, BMW, Ducati, Indian)'
+            };
+            
+            userData.sector = sector;
+            addMessage(`<p><strong>${sectorNames[sector]}</strong></p>`, true);
+            
+            currentStep = 2;
+            updateProgress();
+            
+            botType('<p><strong>Excellent choix !</strong> Notre expertise dans ce secteur nous permet d\'identifier rapidement les marges de négociation.</p><p><strong>Quel est votre budget prévu exact ?</strong></p><p>Indiquez le montant précis pour que notre expert puisse adapter sa stratégie de négociation.</p>', () => {
+                showChatInput("Ex: 25000, 45000, 350000...");
+            });
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            addMessage(`<p><strong>${message}</strong></p>`, true);
+            input.value = '';
+            
+            processUserInput(message);
+        }
+
+        function processUserInput(message) {
+            switch(currentStep) {
+                case 1:
+                    // Secteur (début du bot)
+                    let sector = '';
+                    let sectorName = '';
+                    
+                    if (message === '1' || message.toLowerCase().includes('automobile') || message.toLowerCase().includes('auto')) {
+                        sector = 'automobile';
+                        sectorName = 'Automobile (BMW, Mercedes, Audi, Porsche)';
+                    } else if (message === '2' || message.toLowerCase().includes('immobilier') || message.toLowerCase().includes('maison') || message.toLowerCase().includes('appartement')) {
+                        sector = 'immobilier';
+                        sectorName = 'Immobilier (Villas, appartements)';
+                    } else if (message === '3' || message.toLowerCase().includes('renovation') || message.toLowerCase().includes('cuisine') || message.toLowerCase().includes('travaux')) {
+                        sector = 'renovation';
+                        sectorName = 'Rénovation (Cuisines, salles de bains)';
+                    } else if (message === '4' || message.toLowerCase().includes('moto') || message.toLowerCase().includes('harley') || message.toLowerCase().includes('ducati')) {
+                        sector = 'moto';
+                        sectorName = 'Moto (Harley, BMW, Ducati, Indian)';
+                    } else {
+                        botType('<p><strong>Choix non reconnu.</strong></p><p>Tapez <strong>1</strong> pour Automobile, <strong>2</strong> pour Immobilier, <strong>3</strong> pour Rénovation ou <strong>4</strong> pour Moto.</p>', () => {
+                            showChatInput("Tapez 1, 2, 3 ou 4...");
+                        });
+                        return;
+                    }
+                    
+                    userData.sector = sector;
+                    currentStep = 2;
+                    updateProgress();
+                    
+                    botType('<p><strong>Excellent choix !</strong> Secteur sélectionné : ' + sectorName + '</p><p><strong>Quel est votre budget prévu exact ?</strong></p><p>Indiquez le montant précis pour que notre expert puisse adapter sa stratégie de négociation.</p>', () => {
+                        showChatInput("Ex: 25000, 45000, 350000...");
+                    });
+                    break;
+
+                case 2:
+                    // Budget
+                    const budgetText = message.replace(/[^\d]/g, '');
+                    const budgetNumber = parseInt(budgetText);
+                    
+                    if (!budgetText || budgetText.length === 0 || isNaN(budgetNumber) || budgetNumber < 100) {
+                        botType('<p><strong>Le budget semble incorrect.</strong></p><p>Pouvez-vous indiquer le montant en euros ?</p>', () => {
+                            showChatInput("Ex: 25000, 45000, 350000...");
+                        });
+                        return;
+                    }
+                    
+                    userData.budget = budgetNumber.toLocaleString('fr-FR') + '€';
+                    currentStep = 3;
+                    updateProgress();
+                    
+                    botType('<p><strong>Parfait !</strong> Budget noté : ' + userData.budget + '</p><p><strong>Dans combien de temps prévoyez-vous de signer ?</strong></p>', () => {
+                        showChatInput("Ex: 24h, 2 jours, cette semaine...");
+                    });
+                    break;
+
+                case 3:
+                    // Délai
+                    userData.timeline = message;
+                    
+                    if (message.toLowerCase().includes('24h') || message.toLowerCase().includes('demain') || message.toLowerCase().includes('urgent')) {
+                        userData.isUrgent = true;
+                    }
+                    
+                    currentStep = 4;
+                    updateProgress();
+                    
+                    let urgencyMsg = userData.isUrgent ? '<p><strong style="color: #D4AF37;">URGENCE DÉTECTÉE !</strong></p>' : '';
+                    
+                    botType(urgencyMsg + '<p><strong>Dans quelle région vous trouvez-vous ?</strong></p>', () => {
+                        showChatInput("Ex: Paris, Lyon, Marseille...");
+                    });
+                    break;
+
+                case 4:
+                    // Localisation
+                    userData.location = message;
+                    currentStep = 5;
+                    updateProgress();
+                    
+                    botType('<p><strong>Quel est votre nom complet ?</strong></p>', () => {
+                        showChatInput("Ex: Jean Dupont");
+                    });
+                    break;
+
+                case 5:
+                    // Nom
+                    userData.name = message;
+                    currentStep = 6;
+                    updateProgress();
+                    
+                    botType('<p><strong>Quel est votre numéro de téléphone ?</strong></p>', () => {
+                        showChatInput("Ex: 06 12 34 56 78");
+                    });
+                    break;
+
+                case 6:
+                    // Téléphone
+                    if (!/^(?:\+33|0)[1-9](?:[0-9]{8})$/.test(message.replace(/\s/g, ''))) {
+                        botType('<p><strong>Numéro incorrect.</strong></p><p>Format attendu : 06 12 34 56 78</p>', () => {
+                            showChatInput("Ex: 06 12 34 56 78");
+                        });
+                        return;
+                    }
+                    
+                    userData.phone = message;
+                    currentStep = 7;
+                    updateProgress();
+                    
+                    botType('<p><strong>Votre adresse email ?</strong></p>', () => {
+                        showChatInput("Ex: jean.dupont@email.com");
+                    });
+                    break;
+
+                case 7:
+                    // Email
+                    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(message)) {
+                        botType('<p><strong>Email incorrect.</strong></p><p>Vérifiez le format</p>', () => {
+                            showChatInput("Ex: jean.dupont@email.com");
+                        });
+                        return;
+                    }
+                    
+                    userData.email = message;
+                    currentStep = 8;
+                    updateProgress();
+                    
+                    botType('<p><strong>Décrivez votre projet :</strong></p><p>Que voulez-vous acheter ? Qui est le vendeur ? Où en êtes-vous ?</p>', () => {
+                        showChatInput("Décrivez votre projet...");
+                    });
+                    break;
+
+                case 8:
+                    // Description finale
+                    userData.description = message;
+                    document.getElementById('chatInputContainer').style.display = 'none';
+                    
+                    // Récapitulatif
+                    botType('<p><strong>RÉCAPITULATIF :</strong></p><p>• Secteur : ' + userData.sector + '</p><p>• Budget : ' + userData.budget + '</p><p>• Délai : ' + userData.timeline + '</p><p>• Région : ' + userData.location + '</p><p>• Contact : ' + userData.name + ' (' + userData.phone + ')</p>', () => {
+                        
+                        setTimeout(() => {
+                            // ENVOI DE L'EMAIL via EmailJS
+                            sendEmailNotification(userData);
+                            
+                            if (userData.isUrgent) {
+                                botType('<p><strong>⚡ URGENCE !</strong></p><p>Notre expert va vous appeler dans les 30 minutes.</p><p>Gardez votre téléphone à portée !</p>');
+                            } else {
+                                botType('<p><strong>À BIENTÔT ' + userData.name.split(' ')[0].toUpperCase() + ' !</strong></p><p>Notre expert va vous recontacter rapidement.</p>');
+                            }
+                        }, 1500);
+                    });
+                    
+                    console.log('Données collectées:', userData);
+                    break;
+            }
+        }
+
+        function showFinalOptions(isUrgent) {
+            showQuickReplies([
+                { 
+                    html: '<strong>NOUVELLE DEMANDE</strong>',
+                    action: () => {
+                        resetBot();
+                    }
+                }
+            ]);
+        }
+
+        function resetBot() {
+            addMessage('<p><strong>Nouveau projet</strong></p>', true);
+            userData = {};
+            currentStep = 1;
+            updateProgress();
+            
+            botType('<p><strong>Nouveau projet ?</strong></p><p><strong>Dans quel secteur cette fois ?</strong></p>', () => {
+                document.getElementById('quickReplies').style.display = 'grid';
+                document.getElementById('chatInputContainer').style.display = 'none';
+            });
+        }
+
+        // Animation du compteur
+        function animateCounter() {
+            const counter = document.getElementById('totalSavings');
+            const target = 847293;
+            let current = 0;
+            const increment = target / 150;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                counter.textContent = Math.floor(current).toLocaleString('fr-FR') + ' €';
+            }, 20);
+        }
+
+        // Démarrage de l'animation au chargement
+        window.addEventListener('load', () => {
+            // Retirer la classe preload-animations pour activer les animations
+            document.body.classList.remove('preload-animations');
+            // Démarrer l'animation du compteur
+            animateCounter();
+            // Initialiser le bot
+            updateProgress();
+            // Afficher les boutons de secteur dès le début
+            document.getElementById('quickReplies').style.display = 'grid';
+            document.getElementById('chatInputContainer').style.display = 'none';
+            
+            // Fermer le menu mobile en cliquant sur un lien
+            const navLinks = document.querySelectorAll('.nav-links a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    const navLinksContainer = document.getElementById('navLinks');
+                    const menuBtn = document.querySelector('.mobile-menu-btn');
+                    
+                    if (navLinksContainer && navLinksContainer.classList.contains('mobile-open')) {
+                        navLinksContainer.classList.remove('mobile-open');
+                        if (menuBtn) {
+                            menuBtn.classList.remove('active');
+                            menuBtn.setAttribute('aria-expanded', 'false');
+                        }
+                    }
+                });
+            });
+        });
+
+        // Gestion de l'entrée avec Entrée
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatInput = document.getElementById('chatInput');
+            if (chatInput) {
+                chatInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        sendMessage();
+                    }
+                });
+            }
+        });
+
+        // FAQ Widget functionality
+        function toggleFaqWidget() {
+            const widget = document.getElementById('faqWidget');
+            if (widget.style.display === 'block') {
+                widget.classList.remove('show');
+                setTimeout(() => {
+                    widget.style.display = 'none';
+                }, 300);
+            } else {
+                widget.style.display = 'block';
+                setTimeout(() => {
+                    widget.classList.add('show');
+                }, 10);
+            }
+        }
+
+        function addBotConversation(question, answer) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const typingIndicator = document.getElementById('typingIndicator');
+            
+            // Add user message
+            const userMessage = document.createElement('div');
+            userMessage.className = 'message user';
+            userMessage.innerHTML = `
+                <div class="message-content">
+                    ${question}
+                </div>
+            `;
+            messagesContainer.insertBefore(userMessage, typingIndicator);
+            
+            // Show typing indicator
+            typingIndicator.style.display = 'block';
+            
+            // Scroll to bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            // Simulate typing delay and show response
+            setTimeout(() => {
+                typingIndicator.style.display = 'none';
+                
+                const botMessage = document.createElement('div');
+                botMessage.className = 'message bot';
+                botMessage.innerHTML = `
+                    <div class="message-content">
+                        ${answer}
+                    </div>
+                `;
+                messagesContainer.insertBefore(botMessage, typingIndicator);
+                
+                // Scroll to bottom
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }, 1500);
+        }
+
+        // Menu mobile
+        function toggleMobileMenu() {
+            const navLinks = document.getElementById('navLinks');
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            
+            navLinks.classList.toggle('mobile-open');
+            menuBtn.classList.toggle('active');
+            
+            const isExpanded = navLinks.classList.contains('mobile-open');
+            menuBtn.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+        }
+
+        // Fermer le menu mobile en cliquant sur un lien
+        // (Déjà géré dans window.addEventListener('load'))
+
+        // Scroll smooth pour les liens d'ancrage
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const target = document.querySelector(targetId);
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        });
+
+        // Analytics et tracking
+        function trackEvent(action, category, label) {
+            console.log('Event tracked:', action, category, label);
+            // Ici vous pouvez ajouter votre code Google Analytics
+            // gtag('event', action, { category: category, label: label });
+        }
+
+        // Tracking des clics sur les CTA
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.cta-primary').forEach(button => {
+                button.addEventListener('click', function() {
+                    trackEvent('click', 'CTA', this.textContent);
+                });
+            });
+
+            // Tracking des appels téléphoniques
+            document.querySelectorAll('a[href^="tel:"]').forEach(link => {
+                link.addEventListener('click', function() {
+                    trackEvent('click', 'phone', this.href);
+                });
+            });
+
+            // Tracking des emails
+            document.querySelectorAll('a[href^="mailto:"]').forEach(link => {
+                link.addEventListener('click', function() {
+                    trackEvent('click', 'email', this.href);
+                });
+            });
+        });
+
+        // Cookie management
+        function acceptCookies() {
+            document.getElementById('cookieBanner').classList.remove('show');
+            console.log('Cookies acceptés');
+        }
+
+        function declineCookies() {
+            document.getElementById('cookieBanner').classList.remove('show');
+            console.log('Cookies refusés');
+        }
+
+        // Show cookie banner if not decided
+        setTimeout(() => {
+            document.getElementById('cookieBanner').classList.add('show');
+        }, 2000);
+
+        // Fermer les widgets en cliquant à l'extérieur
+        document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('click', function(e) {
+                const faqWidget = document.getElementById('faqWidget');
+                const contactWidget = document.querySelector('.contact-widget');
+                
+                if (faqWidget && contactWidget && !contactWidget.contains(e.target)) {
+                    faqWidget.style.display = 'none';
+                }
+            });
+        });
+
+        // Debug console
+        console.log('🏆 You² Cabinet Bot - Version Complète');
+    </script><!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -40,6 +561,9 @@
     
     <!-- Google Fonts avec display=swap pour performance -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- EmailJS pour l'envoi d'emails -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     
     <!-- Schema.org pour SEO local -->
     <script type="application/ld+json">
@@ -481,14 +1005,15 @@
         }
 
         .service-savings {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
+            background: #000000;
+            border: 2px solid #D4AF37;
+            border-radius: 25px;
             padding: 0.5rem 1rem;
-            font-weight: 500;
-            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+            color: #ffffff;
             display: inline-block;
             font-size: 0.9rem;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
         }
 
         .process {
@@ -595,71 +1120,334 @@
             backdrop-filter: blur(10px);
         }
 
-        .contact-form {
+        /* BOT CONTACT STYLES */
+        .bot-container {
+            width: 100%;
+            max-width: 900px;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(212, 175, 55, 0.3);
             border-radius: 20px;
-            padding: 3rem;
-            max-width: 800px;
-            margin: 4rem auto;
+            overflow: hidden;
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+            position: relative;
+            margin: 0 auto;
         }
 
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            color: rgba(255, 255, 255, 0.9);
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-            font-size: 0.95rem;
-            letter-spacing: -0.01em;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
+        .bot-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
             width: 100%;
-            padding: 1rem;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .bot-container:hover::before {
+            left: 100%;
+        }
+
+        .bot-header {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, rgba(0, 0, 0, 0.2) 100%);
+            padding: 2rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            text-align: center;
+        }
+
+        .bot-avatar {
+            width: 60px;
+            height: 60px;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            color: #ffffff;
+            font-weight: 900;
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
+            backdrop-filter: blur(20px);
+            transition: all 0.4s ease;
+        }
+
+        .bot-avatar:hover {
+            transform: translateY(-8px);
+            border-color: #D4AF37;
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.4), 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .bot-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .bot-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.3rem;
+            font-style: italic;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        .chat-container {
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(212, 175, 55, 0.3) transparent;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: rgba(212, 175, 55, 0.4);
+            border-radius: 3px;
+        }
+
+        .message {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            animation: messageSlideIn 0.5s ease-out;
+        }
+
+        @keyframes messageSlideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-message {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+
+        .bot-message .message-avatar {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            color: #ffffff;
+        }
+
+        .user-message .message-avatar {
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
+            color: #ffffff;
+        }
+
+        .message-content {
+            max-width: 75%;
+            padding: 1.5rem 2rem;
+            border-radius: 16px;
+            line-height: 1.6;
+            position: relative;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .bot-message .message-content {
             background: rgba(255, 255, 255, 0.02);
             color: #ffffff;
-            font-size: 0.95rem;
-            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            font-family: 'Inter', sans-serif;
-            font-weight: 400;
+            border: 1px solid rgba(212, 175, 55, 0.3);
         }
 
-        /* Correction pour les options des select */
-        .form-group select option {
-            background: #1a1a1a;
+        .user-message .message-content {
+            background: rgba(255, 255, 255, 0.05);
             color: #ffffff;
-            padding: 0.5rem;
-            border: none;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .form-group select option:hover {
-            background: #333333;
-            color: #ffffff;
+        .typing-indicator {
+            display: none;
+            padding: 1rem 1.25rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 16px;
+            max-width: 120px;
         }
 
-        .form-group select option:checked {
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+            justify-content: center;
+        }
+
+        .typing-dots span {
+            width: 8px;
+            height: 8px;
             background: #D4AF37;
-            color: #000000;
+            border-radius: 50%;
+            animation: typingAnimation 1.5s ease-in-out infinite;
         }
 
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typingAnimation {
+            0%, 60%, 100% { opacity: 0.3; transform: scale(0.8); }
+            30% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .quick-replies {
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            align-items: center;
+            justify-items: center;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .quick-reply {
+            background: transparent;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 16px;
+            padding: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            width: 120px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .quick-reply::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .quick-reply:hover::before {
+            left: 100%;
+        }
+
+        .quick-reply:hover {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: #D4AF37;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(212, 175, 55, 0.3);
+        }
+
+        .chat-input-container {
+            padding: 2rem;
+            border-top: 1px solid rgba(212, 175, 55, 0.1);
+            display: none;
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 25px;
+            padding: 1rem 1.5rem;
+            color: #ffffff;
+            font-size: 1rem;
             outline: none;
-            border-color: rgba(255, 255, 255, 0.3);
-            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
-            background: rgba(255, 255, 255, 0.04);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .chat-input:focus {
+            border-color: #D4AF37;
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .send-btn {
+            background: rgba(0, 0, 0, 0.8);
+            color: #ffffff;
+            border: 2px solid #D4AF37;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.5);
+            border-color: #ffd700;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 1rem 2rem;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #D4AF37, #ffd700);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 2px;
+        }
+
+        .step-indicator {
+            text-align: center;
+            padding: 1rem 2rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
         }
 
         .testimonials {
@@ -726,15 +1514,16 @@
         }
 
         .testimonial-saving {
-            background: rgba(212, 175, 55, 0.1);
-            border: 1px solid #D4AF37;
+            background: #000000;
+            border: 2px solid #D4AF37;
             border-radius: 25px;
             padding: 0.5rem 1rem;
-            font-weight: 500;
-            color: #D4AF37;
+            font-weight: 600;
+            color: #ffffff;
             display: inline-block;
             font-size: 0.9rem;
             margin-top: 0.5rem;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
         }
 
         .contact-widget {
@@ -1167,9 +1956,30 @@
                 width: 300px;
             }
             
-            .cookie-content {
-                flex-direction: column;
-                text-align: center;
+            .bot-container {
+                border-radius: 20px;
+            }
+            
+            .chat-container {
+                height: 400px;
+            }
+            
+            .quick-replies {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+            }
+            
+            .message-content {
+                max-width: 85%;
+                padding: 1.2rem 1.5rem;
+            }
+            
+            .bot-header {
+                padding: 1.5rem;
+            }
+            
+            .bot-title {
+                font-size: 1.5rem;
             }
         }
 
@@ -1292,7 +2102,7 @@
                         BMW, Mercedes-Benz, Audi, Porsche<br>
                         Négociation directe concessionnaires et particuliers
                     </p>
-                    <div class="service-savings" style="border: 2px solid #D4AF37; background: #000000; border-radius: 25px; padding: 0.5rem 1rem; font-weight: 600; color: #ffffff; display: inline-block; font-size: 0.9rem; box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);">Économies: 1K€ à 3K€</div>
+                    <div class="service-savings">Économies: 1K€ à 3K€</div>
                 </div>
 
                 <div class="service-card">
@@ -1301,7 +2111,7 @@
                         Villas, appartements standing, maisons de caractère<br>
                         Accompagnement acquisitions prestigieuses
                     </p>
-                    <div class="service-savings" style="border: 2px solid #D4AF37; background: #000000; border-radius: 25px; padding: 0.5rem 1rem; font-weight: 600; color: #ffffff; display: inline-block; font-size: 0.9rem; box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);">Économies: 6K€ à 75K€</div>
+                    <div class="service-savings">Économies: 6K€ à 75K€</div>
                 </div>
 
                 <div class="service-card">
@@ -1310,7 +2120,7 @@
                         Cuisines design, salles de bains spa, extensions modernes<br>
                         Négociation directe artisans et fournisseurs
                     </p>
-                    <div class="service-savings" style="border: 2px solid #D4AF37; background: #000000; border-radius: 25px; padding: 0.5rem 1rem; font-weight: 600; color: #ffffff; display: inline-block; font-size: 0.9rem; box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);">Économies: 1,5K€ à 15K€</div>
+                    <div class="service-savings">Économies: 1,5K€ à 15K€</div>
                 </div>
 
                 <div class="service-card">
@@ -1319,7 +2129,7 @@
                         Harley-Davidson, BMW Motorrad, Ducati, Indian<br>
                         Négociation directe concessionnaires et particuliers
                     </p>
-                    <div class="service-savings" style="border: 2px solid #D4AF37; background: #000000; border-radius: 25px; padding: 0.5rem 1rem; font-weight: 600; color: #ffffff; display: inline-block; font-size: 0.9rem; box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);">Économies: 1K€ à 5K€</div>
+                    <div class="service-savings">Économies: 1K€ à 5K€</div>
                 </div>
             </div>
 
@@ -1396,100 +2206,82 @@
                 <div class="testimonial-card">
                     <p class="testimonial-text">"J'étais sur le point de signer pour ma BMW X5 à 68 000€. En 2h, You² Cabinet a négocié 2 800€ de réduction supplémentaire grâce à sa connaissance du secteur automobile."</p>
                     <p class="testimonial-author">- Marc D., Chef d'entreprise, Lyon</p>
-                    <p class="testimonial-saving" style="border: 2px solid #D4AF37; background: #000000; border-radius: 25px; padding: 0.5rem 1rem; font-weight: 600; color: #ffffff; display: inline-block; font-size: 0.9rem; box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);">Économie : 2 800€</p>
+                    <p class="testimonial-saving">Économie : 2 800€</p>
                 </div>
 
                 <div class="testimonial-card">
                     <p class="testimonial-text">"Pour l'achat de notre villa à Cannes, ils ont obtenu 15 000€ de baisse en une journée. Leur expérience d'ancien marchand de biens fait la différence."</p>
                     <p class="testimonial-author">- Sophie & Jean-Luc M., Retraités, Cannes</p>
-                    <p class="testimonial-saving" style="border: 2px solid #D4AF37; background: #000000; border-radius: 25px; padding: 0.5rem 1rem; font-weight: 600; color: #ffffff; display: inline-block; font-size: 0.9rem; box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);">Économie : 15 000€</p>
+                    <p class="testimonial-saving">Économie : 15 000€</p>
                 </div>
 
                 <div class="testimonial-card">
                     <p class="testimonial-text">"Rénovation complète de ma cuisine. 24h avant de signer avec l'artisan, You² a négocié 4 200€ d'équipements supplémentaires. Leur expertise rénovation est impressionnante."</p>
                     <p class="testimonial-author">- Valérie L., Cadre, Marseille</p>
-                    <p class="testimonial-saving" style="border: 2px solid #D4AF37; background: #000000; border-radius: 25px; padding: 0.5rem 1rem; font-weight: 600; color: #ffffff; display: inline-block; font-size: 0.9rem; box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);">Économie : 4 200€</p>
+                    <p class="testimonial-saving">Économie : 4 200€</p>
                 </div>
             </div>
         </section>
 
         <section id="contact" class="services">
             <h2 class="section-title">CONTACT EXPRESS</h2>
-            <div class="contact-form">
-                <form id="contactForm">
-                    <div class="form-group">
-                        <label for="sector">Secteur d'achat *</label>
-                        <select id="sector" name="sector" required>
-                            <option value="">Sélectionnez votre secteur</option>
-                            <option value="automobile">Automobile (BMW, Mercedes, Audi...)</option>
-                            <option value="immobilier">Immobilier (Villa, appartement...)</option>
-                            <option value="renovation">Rénovation (Cuisine, salle de bain...)</option>
-                            <option value="moto">Moto (Harley, BMW, Ducati...)</option>
-                            <option value="autre">Autre (précisez en message)</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="budget">Budget prévu</label>
-                        <select id="budget" name="budget">
-                            <option value="">Sélectionnez votre budget</option>
-                            <option value="5-15k">5K€ - 15K€</option>
-                            <option value="15-50k">15K€ - 50K€</option>
-                            <option value="50-100k">50K€ - 100K€</option>
-                            <option value="100-300k">100K€ - 300K€</option>
-                            <option value="300k+">Plus de 300K€</option>
-                        </select>
-                    </div>
+            <div class="bot-container">
+                <div class="bot-header">
+                    <div class="bot-avatar">Y²</div>
+                    <h1 class="bot-title">CONTACT EXPRESS</h1>
+                    <p class="bot-subtitle">"Vous achetez. Nous défendons votre argent."</p>
+                </div>
 
-                    <div class="form-group">
-                        <label for="timeline">Délai avant signature</label>
-                        <select id="timeline" name="timeline" required>
-                            <option value="">Sélectionnez le délai</option>
-                            <option value="24h">Moins de 24h (Urgence)</option>
-                            <option value="2-3j">2-3 jours</option>
-                            <option value="1week">Cette semaine</option>
-                            <option value="planning">En planification</option>
-                        </select>
+                <div class="step-indicator" id="stepIndicator">
+                    Étape 1/8 - Secteur d'intervention
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message bot-message">
+                            <div class="message-avatar">Y²</div>
+                            <div class="message-content">
+                                <p><strong>Bonjour ! Je suis votre assistant You² Cabinet.</strong></p>
+                                <p>Vous êtes sur le point de signer un achat important ? Parfait ! Je vais configurer votre intervention express en quelques questions.</p>
+                                <p><strong>Dans quel secteur souhaitez-vous notre expertise ?</strong></p>
+                            </div>
+                        </div>
+                        
+                        <div class="typing-indicator" id="typingIndicator">
+                            <div class="typing-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="name">Nom complet *</label>
-                        <input type="text" id="name" name="name" required placeholder="Votre nom et prénom">
+                    <div class="quick-replies" id="quickReplies">
+                        <div class="quick-reply" onclick="selectSector('automobile')">
+                            <strong>AUTO</strong>
+                        </div>
+                        <div class="quick-reply" onclick="selectSector('immobilier')">
+                            <strong>IMMO</strong>
+                        </div>
+                        <div class="quick-reply" onclick="selectSector('renovation')">
+                            <strong>RENO</strong>
+                        </div>
+                        <div class="quick-reply" onclick="selectSector('moto')">
+                            <strong>MOTO</strong>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="phone">Téléphone *</label>
-                        <input type="tel" id="phone" name="phone" required placeholder="06 XX XX XX XX">
+                    <div class="chat-input-container" id="chatInputContainer">
+                        <div class="chat-input-wrapper">
+                            <input type="text" id="chatInput" class="chat-input" placeholder="Tapez votre réponse..." maxlength="200">
+                            <button class="send-btn" onclick="sendMessage()">Envoyer</button>
+                        </div>
                     </div>
-
-                    <div class="form-group">
-                        <label for="email">Email *</label>
-                        <input type="email" id="email" name="email" required placeholder="votre@email.com">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="location">Localisation</label>
-                        <input type="text" id="location" name="location" placeholder="Ville, département">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="description">Description de votre projet *</label>
-                        <textarea id="description" name="description" rows="4" required placeholder="Décrivez votre projet d'achat, votre situation actuelle, le vendeur/fournisseur, etc."></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="currentNegotiation">Négociation en cours</label>
-                        <textarea id="currentNegotiation" name="currentNegotiation" rows="3" placeholder="Où en êtes-vous dans la négociation ? Prix initial, réductions déjà obtenues, points de blocage..."></textarea>
-                    </div>
-
-                    <button type="submit" class="cta-primary" style="width: 100%; margin-top: 1rem;">
-                        LANCER MA NÉGOCIATION EXPRESS
-                    </button>
-
-                    <p style="text-align: center; color: #888; font-size: 0.9rem; margin-top: 1rem;">
-                        * Champs obligatoires - Réponse sous 2h maximum
-                    </p>
-                </form>
+                </div>
             </div>
         </section>
 
