@@ -41,15 +41,8 @@
     <!-- Google Fonts avec display=swap pour performance -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- EmailJS - VERSION CORRIGÉE -->
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script>
-        // Initialisation EmailJS corrigée
-        (function() {
-            emailjs.init('Ol1JMnZD1wrlqrDrG');
-            console.log("EmailJS initialisé avec succès");
-        })();
-    </script>
+    <!-- EmailJS pour l'envoi d'emails - URL autorisée par CSP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/emailjs/4.0.2/email.min.js"></script>
     
     <!-- Schema.org pour SEO local -->
     <script type="application/ld+json">
@@ -108,7 +101,1406 @@
     </script>
     
     <style>
-        /* [Tous vos styles CSS existants restent inchangés] */
+        /* Performance optimizations */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #000000 0%, #111111 50%, #000000 100%);
+            color: #ffffff;
+            line-height: 1.6;
+            overflow-x: hidden;
+            font-weight: 400;
+            letter-spacing: -0.01em;
+            font-display: swap;
+        }
+
+        /* Optimisation des images */
+        img {
+            max-width: 100%;
+            height: auto;
+            loading: lazy;
+        }
+
+        /* Préchargement des animations critiques */
+        .preload-animations * {
+            animation-duration: 0s !important;
+            animation-delay: 0s !important;
+            transition-duration: 0s !important;
+        }
+
+        /* Optimisation mobile first */
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                padding: 0 2rem;
+            }
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.85);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -0.02em;
+            transition: all 0.3s ease;
+        }
+        
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            letter-spacing: -0.01em;
+        }
+
+        .nav-links a:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-1px);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            flex-direction: column;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .mobile-menu-btn span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background: #ffffff;
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+
+        /* Menu mobile responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                height: calc(100vh - 100px);
+                background: rgba(0, 0, 0, 0.95);
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: center;
+                gap: 1rem;
+                padding: 2rem;
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+                z-index: 999;
+            }
+
+            .nav-links.mobile-open {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+
+            .nav-links a {
+                font-size: 1.2rem;
+                padding: 1rem 2rem;
+                width: 100%;
+                text-align: center;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 12px;
+                background: rgba(255, 255, 255, 0.05);
+            }
+
+            .mobile-menu-btn {
+                display: flex;
+                z-index: 1001;
+            }
+
+            .mobile-menu-btn.active span:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 5px);
+            }
+
+            .mobile-menu-btn.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .mobile-menu-btn.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(7px, -6px);
+            }
+        }
+
+        .hero {
+            margin-top: 100px;
+            padding: 6rem 2rem;
+            text-align: center;
+            background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.02) 0%, transparent 70%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 4.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #ffffff 0%, #f5f5f7 50%, #ffffff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.03em;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 2rem;
+            font-weight: 500;
+            letter-spacing: -0.01em;
+        }
+
+        .hero-tagline {
+            font-size: 2rem;
+            color: #ffffff;
+            margin-bottom: 3rem;
+            font-style: italic;
+            font-weight: 300;
+            opacity: 0.9;
+            letter-spacing: -0.01em;
+        }
+
+        .stats-counter {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 4rem auto;
+            max-width: 600px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-counter::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .stats-counter:hover::before {
+            left: 100%;
+        }
+
+        .stats-counter:hover {
+            transform: translateY(-8px);
+            border-color: #D4AF37;
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.4), 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .counter-display {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .counter-label {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.6);
+            text-align: center;
+            font-weight: 400;
+            letter-spacing: -0.01em;
+        }
+
+        .cta-primary {
+            display: inline-block;
+            background: rgba(0, 0, 0, 0.8);
+            color: #ffffff;
+            border: 2px solid #D4AF37;
+            padding: 1rem 2.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+            text-transform: none;
+            letter-spacing: -0.01em;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .cta-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.5);
+            border-color: #ffd700;
+        }
+
+        .services {
+            padding: 6rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            color: #ffffff;
+            letter-spacing: -0.02em;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .service-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .service-card:hover::before {
+            left: 100%;
+        }
+
+        .service-card:hover {
+            transform: translateY(-8px);
+            border-color: #D4AF37;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 30px rgba(212, 175, 55, 0.3);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .service-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            letter-spacing: -0.01em;
+        }
+
+        .service-description {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        .service-savings {
+            background: #000000;
+            border: 2px solid #D4AF37;
+            border-radius: 25px;
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+            color: #ffffff;
+            display: inline-block;
+            font-size: 0.9rem;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .process {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, rgba(0, 0, 0, 0.2) 100%);
+            padding: 6rem 2rem;
+        }
+
+        .process-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .process-step {
+            text-align: center;
+            position: relative;
+        }
+
+        .step-number {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            color: #ffffff;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 900;
+            margin: 0 auto 1rem;
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .step-number::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.3), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .step-number:hover::before {
+            left: 100%;
+        }
+
+        .step-number:hover {
+            transform: translateY(-8px);
+            border-color: #D4AF37;
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.4), 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .guarantee {
+            background: linear-gradient(135deg, #d4af37 0%, #ffd700 100%);
+            color: #000000;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .guarantee-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .guarantee h2 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+        }
+
+        .guarantee-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+        }
+
+        .pricing {
+            background: rgba(212, 175, 55, 0.1);
+            padding: 6rem 2rem;
+            text-align: center;
+        }
+
+        .pricing-card {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(26, 26, 26, 0.9) 100%);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 600px;
+            margin: 0 auto;
+            backdrop-filter: blur(10px);
+        }
+
+        /* BOT CONTACT STYLES */
+        .bot-container {
+            width: 100%;
+            max-width: 900px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 20px;
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .bot-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .bot-container:hover::before {
+            left: 100%;
+        }
+
+        .bot-header {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, rgba(0, 0, 0, 0.2) 100%);
+            padding: 2rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            text-align: center;
+        }
+
+        .bot-avatar {
+            width: 60px;
+            height: 60px;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            color: #ffffff;
+            font-weight: 900;
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
+            backdrop-filter: blur(20px);
+            transition: all 0.4s ease;
+        }
+
+        .bot-avatar:hover {
+            transform: translateY(-8px);
+            border-color: #D4AF37;
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.4), 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .bot-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .bot-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.3rem;
+            font-style: italic;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        .chat-container {
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(212, 175, 55, 0.3) transparent;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: rgba(212, 175, 55, 0.4);
+            border-radius: 3px;
+        }
+
+        .message {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            animation: messageSlideIn 0.5s ease-out;
+        }
+
+        @keyframes messageSlideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-message {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+
+        .bot-message .message-avatar {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            color: #ffffff;
+        }
+
+        .user-message .message-avatar {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+        }
+
+        .message-content {
+            max-width: 75%;
+            padding: 1.5rem 2rem;
+            border-radius: 16px;
+            line-height: 1.6;
+            position: relative;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .bot-message .message-content {
+            background: rgba(255, 255, 255, 0.02);
+            color: #ffffff;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .user-message .message-content {
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .typing-indicator {
+            display: none;
+            padding: 1rem 1.25rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 16px;
+            max-width: 120px;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+            justify-content: center;
+        }
+
+        .typing-dots span {
+            width: 8px;
+            height: 8px;
+            background: #D4AF37;
+            border-radius: 50%;
+            animation: typingAnimation 1.5s ease-in-out infinite;
+        }
+
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typingAnimation {
+            0%, 60%, 100% { opacity: 0.3; transform: scale(0.8); }
+            30% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .quick-replies {
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            align-items: center;
+            justify-items: center;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .quick-reply {
+            background: transparent;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 16px;
+            padding: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            width: 120px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .quick-reply::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .quick-reply:hover::before {
+            left: 100%;
+        }
+
+        .quick-reply:hover {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: #D4AF37;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(212, 175, 55, 0.3);
+        }
+
+        .chat-input-container {
+            padding: 2rem;
+            border-top: 1px solid rgba(212, 175, 55, 0.1);
+            display: none;
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 25px;
+            padding: 1rem 1.5rem;
+            color: #ffffff;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .chat-input:focus {
+            border-color: #D4AF37;
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .send-btn {
+            background: rgba(0, 0, 0, 0.8);
+            color: #ffffff;
+            border: 2px solid #D4AF37;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.5);
+            border-color: #ffd700;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 1rem 2rem;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #D4AF37, #ffd700);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 2px;
+        }
+
+        .step-indicator {
+            text-align: center;
+            padding: 1rem 2rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+        }
+
+        .testimonials {
+            padding: 6rem 2rem;
+            background: rgba(255, 255, 255, 0.01);
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .testimonial-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .testimonial-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .testimonial-card:hover::before {
+            left: 100%;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-8px);
+            border-color: #D4AF37;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 30px rgba(212, 175, 55, 0.3);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .testimonial-text {
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        .testimonial-author {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .testimonial-saving {
+            background: #000000;
+            border: 2px solid #D4AF37;
+            border-radius: 25px;
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+            color: #ffffff;
+            display: inline-block;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .contact-widget {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+
+        .contact-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            align-items: flex-end;
+        }
+
+        .contact-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            min-width: 140px;
+            border: none;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .call-btn, .rdv-btn, .faq-btn {
+            background: rgba(0, 0, 0, 0.9) !important;
+            color: #ffffff !important;
+            border: 2px solid #D4AF37 !important;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+        }
+
+        .call-btn:hover, .rdv-btn:hover, .faq-btn:hover {
+            transform: translateY(-2px) scale(1.05) !important;
+            box-shadow: 0 12px 40px rgba(212, 175, 55, 0.3) !important;
+            border-color: #ffd700 !important;
+        }
+
+        .faq-widget {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 380px;
+            max-height: 520px;
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid #D4AF37;
+            border-radius: 24px;
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(212, 175, 55, 0.2);
+            overflow: hidden;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .faq-widget.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .faq-widget-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(0, 0, 0, 0.3) 100%);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .faq-widget-header h4 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .faq-widget-header p {
+            color: rgba(255, 255, 255, 0.7);
+            margin: 0;
+            font-size: 0.85rem;
+        }
+
+        .faq-chat-messages {
+            height: 200px;
+            overflow-y: auto;
+            padding: 1rem;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(212, 175, 55, 0.3) transparent;
+        }
+
+        .faq-chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .faq-chat-messages::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+
+        .faq-chat-messages::-webkit-scrollbar-thumb {
+            background: rgba(212, 175, 55, 0.4);
+            border-radius: 3px;
+        }
+
+        .faq-chat-messages::-webkit-scrollbar-thumb:hover {
+            background: rgba(212, 175, 55, 0.6);
+        }
+
+        .faq-message {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            animation: messageSlide 0.3s ease-out;
+        }
+
+        @keyframes messageSlide {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .faq-message.user {
+            flex-direction: row-reverse;
+        }
+
+        .faq-message-content {
+            max-width: 85%;
+            padding: 0.8rem 1.2rem;
+            border-radius: 18px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .faq-message.bot .faq-message-content {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+            color: #ffffff;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .faq-message.user .faq-message-content {
+            background: linear-gradient(135deg, #D4AF37 0%, #ffd700 100%);
+            color: #000000;
+            font-weight: 500;
+        }
+
+        .quick-questions {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.6rem;
+            padding: 1rem;
+            max-height: 240px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(212, 175, 55, 0.3) transparent;
+        }
+
+        .quick-questions::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .quick-questions::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+
+        .quick-questions::-webkit-scrollbar-thumb {
+            background: rgba(212, 175, 55, 0.4);
+            border-radius: 3px;
+        }
+
+        .quick-question {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 16px;
+            padding: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            font-size: 0.85rem;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quick-question::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .quick-question:hover::before {
+            left: 100%;
+        }
+
+        .quick-question:hover {
+            background: rgba(212, 175, 55, 0.08);
+            border-color: #D4AF37;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.2);
+        }
+
+        .faq-typing-indicator {
+            display: none;
+            padding: 0.8rem 1.2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 18px;
+            max-width: 80px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .faq-typing-dots {
+            display: flex;
+            gap: 4px;
+            justify-content: center;
+        }
+
+        .faq-typing-dots span {
+            width: 8px;
+            height: 8px;
+            background: #D4AF37;
+            border-radius: 50%;
+            animation: typing 1.5s ease-in-out infinite;
+        }
+
+        .faq-typing-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .faq-typing-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% { opacity: 0.3; transform: scale(0.8); }
+            30% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .footer {
+            background: rgba(0, 0, 0, 0.3);
+            border-top: 1px solid rgba(212, 175, 55, 0.3);
+            padding: 3rem 2rem 1rem;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            color: #ffffff;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 25px;
+            padding: 0.8rem 1.5rem;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            cursor: pointer;
+        }
+
+        .footer-section h3:hover {
+            transform: translateY(-2px);
+            border-color: #D4AF37;
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: #cccccc;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: #d4af37;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Cookie Banner */
+        .cookie-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.95);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            z-index: 10000;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .cookie-banner.show {
+            transform: translateY(0);
+        }
+        
+        .cookie-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+        
+        .cookie-text {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .cookie-text a {
+            color: #ffffff;
+            text-decoration: underline;
+        }
+        
+        .cookie-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .cookie-btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .cookie-btn.accept {
+            background: #ffffff;
+            color: #000000;
+        }
+        
+        .cookie-btn.decline {
+            background: transparent;
+            color: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .cookie-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero-tagline {
+                font-size: 1.8rem;
+            }
+            
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .counter-display {
+                font-size: 2.5rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .process-steps {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .contact-widget {
+                bottom: 15px;
+                right: 15px;
+            }
+            
+            .contact-btn {
+                padding: 0.7rem 1rem;
+                font-size: 0.85rem;
+                min-width: 100px;
+            }
+            
+            .faq-widget {
+                width: 300px;
+            }
+            
+            .bot-container {
+                border-radius: 20px;
+            }
+            
+            .chat-container {
+                height: 400px;
+            }
+            
+            .quick-replies {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+            }
+            
+            .message-content {
+                max-width: 85%;
+                padding: 1.2rem 1.5rem;
+            }
+            
+            .bot-header {
+                padding: 1.5rem;
+            }
+            
+            .bot-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Performance pour grands écrans */
+        @media (min-width: 1400px) {
+            .hero h1 {
+                font-size: 5rem;
+            }
+            
+            .section-title {
+                font-size: 3rem;
+            }
+        }
+
+        /* Accessibilité */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+        
+        /* Focus visible pour navigation clavier */
+        .nav-links a:focus-visible,
+        .cta-primary:focus-visible,
+        .quick-question:focus-visible {
+            outline: 2px solid #ffffff;
+            outline-offset: 2px;
+        }
     </style>
 </head>
 <body class="preload-animations">
@@ -152,7 +1544,163 @@
     </header>
 
     <main id="main-content" role="main">
-        <!-- [Toutes vos sections existantes restent inchangées jusqu'au formulaire de contact] -->
+        <section class="hero" role="banner">
+            <div class="hero-content">
+                <h1>PRÊT À SIGNER ?</h1>
+                <p class="hero-subtitle">Attendez 24h de plus !</p>
+                <p class="hero-tagline">"Vous achetez. Nous défendons votre argent."</p>
+                
+                <div class="stats-counter" role="region" aria-label="Économies réalisées">
+                    <div class="counter-display" id="totalSavings" aria-live="polite">0 €</div>
+                    <div class="counter-label">économisés cette année pour nos clients</div>
+                </div>
+
+                <a href="#contact" class="cta-primary" onclick="trackEvent('cta_click', 'hero', 'consultation_express')" aria-label="Commencer une consultation express">
+                    CONSULTATION EXPRESS
+                </a>
+                
+                <!-- Indicateur de confiance -->
+                <div style="margin-top: 2rem; opacity: 0.8;">
+                    <p style="font-size: 0.9rem; color: rgba(255,255,255,0.7);">
+                        4.9/5 • 127+ clients satisfaits • Intervention sous 2h
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="services" class="services">
+            <h2 class="section-title">EXPERTISE MULTI-SECTEURS</h2>
+            <p style="text-align: center; font-size: 1.3rem; color: rgba(255,255,255,0.7); font-style: italic; margin-bottom: 3rem;">
+                "L'art de transformer vos désirs en victoires négociées."
+            </p>
+            
+            <div class="services-grid">
+                <div class="service-card">
+                    <h3 class="service-title">AUTOMOBILE</h3>
+                    <p class="service-description">
+                        BMW, Mercedes-Benz, Audi, Porsche<br>
+                        Négociation directe concessionnaires et particuliers
+                    </p>
+                    <div class="service-savings">Économies: 1K€ à 3K€</div>
+                </div>
+
+                <div class="service-card">
+                    <h3 class="service-title">IMMOBILIER</h3>
+                    <p class="service-description">
+                        Villas, appartements standing, maisons de caractère<br>
+                        Accompagnement acquisitions prestigieuses
+                    </p>
+                    <div class="service-savings">Économies: 6K€ à 75K€</div>
+                </div>
+
+                <div class="service-card">
+                    <h3 class="service-title">RÉNOVATION</h3>
+                    <p class="service-description">
+                        Cuisines design, salles de bains spa, extensions modernes<br>
+                        Négociation directe artisans et fournisseurs
+                    </p>
+                    <div class="service-savings">Économies: 1,5K€ à 15K€</div>
+                </div>
+
+                <div class="service-card">
+                    <h3 class="service-title">MOTO</h3>
+                    <p class="service-description">
+                        Harley-Davidson, BMW Motorrad, Ducati, Indian<br>
+                        Négociation directe concessionnaires et particuliers
+                    </p>
+                    <div class="service-savings">Économies: 1K€ à 5K€</div>
+                </div>
+            </div>
+
+            <div style="text-align: center; padding: 2rem; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 16px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); position: relative; overflow: hidden;" 
+                 onmouseover="this.style.transform='translateY(-8px)'; this.style.borderColor='#D4AF37'; this.style.boxShadow='0 0 40px rgba(212, 175, 55, 0.4), 0 20px 40px rgba(0, 0, 0, 0.3)';" 
+                 onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='rgba(212, 175, 55, 0.3)'; this.style.boxShadow='none';">
+                
+                <div style="position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent); transition: left 0.6s ease; pointer-events: none;"
+                     onmouseover="this.style.left='100%';" onmouseout="this.style.left='-100%';"></div>
+                
+                <h3 style="color: #ffffff; margin-bottom: 1rem;">POURQUOI NOUS FAIRE CONFIANCE ?</h3>
+                <p style="font-size: 1.1rem; color: rgba(255,255,255,0.9); margin-bottom: 1rem;">
+                    <strong>18 années d'expérience</strong> dans la vente automobile, transaction immobilière et rénovation
+                </p>
+                <p style="font-size: 1rem; color: rgba(255,255,255,0.7);">
+                    • Ex-vendeur automobile professionnel<br>
+                    • Ancien marchand de biens agréé<br>
+                    • Expert en négociation rénovation<br>
+                    • Connaissance approfondie des marges sectorielles
+                </p>
+            </div>
+        </section>
+
+        <section id="process" class="process">
+            <div class="process-content">
+                <h2 class="section-title">INTERVENTION EXPRESS</h2>
+                <div class="process-steps">
+                    <div class="process-step">
+                        <div class="step-number">1</div>
+                        <h3 style="color: #ffffff; margin-bottom: 1rem;">CONTACT EXPRESS</h3>
+                        <p style="color: rgba(255,255,255,0.7);">Vous nous contactez 24h avant signature prévue</p>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">2</div>
+                        <h3 style="color: #ffffff; margin-bottom: 1rem;">ANALYSE IMMÉDIATE</h3>
+                        <p style="color: rgba(255,255,255,0.7);">Nous analysons votre dossier et négociation en cours</p>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">3</div>
+                        <h3 style="color: #ffffff; margin-bottom: 1rem;">NÉGOCIATION FINALE</h3>
+                        <p style="color: rgba(255,255,255,0.7);">Intervention directe pour optimiser votre achat</p>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">4</div>
+                        <h3 style="color: #ffffff; margin-bottom: 1rem;">ÉCONOMIES RÉALISÉES</h3>
+                        <p style="color: rgba(255,255,255,0.7);">Vous signez avec nos économies supplémentaires</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="guarantee" id="tarifs" style="background: rgba(255, 255, 255, 0.01); padding: 6rem 2rem; text-align: center; color: #ffffff;">
+            <h2 class="section-title">NE PERDEZ PLUS D'ARGENT !</h2>
+            <div class="pricing-card">
+                <h3 style="color: #ffffff; font-size: 2rem; margin-bottom: 2rem;">Notre garantie</h3>
+                <div style="font-size: 3rem; color: #D4AF37; font-weight: 700; margin-bottom: 1rem;">GRATUIT</div>
+                <p style="color: rgba(255,255,255,0.8); font-size: 1.2rem; margin-bottom: 2rem;">
+                    si aucune économie réalisée
+                </p>
+                <div style="background: rgba(255, 255, 255, 0.08); padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; border: 1px solid rgba(255,255,255,0.1);">
+                    <p style="color: rgba(255,255,255,0.9); font-weight: 600; font-size: 1.1rem;">
+                        <span style="color: #D4AF37;">✓</span> Intervention sans engagement<br>
+                        <span style="color: #D4AF37;">✓</span> 15% des gains seulement<br>
+                        <span style="color: #D4AF37;">✓</span> Résultats garantis ou gratuit
+                    </p>
+                </div>
+                <a href="#contact" class="cta-primary" onclick="trackEvent('cta_click', 'guarantee', 'pourquoi_pas_vous')">POURQUOI PAS VOUS ?</a>
+            </div>
+        </section>
+
+        <section id="temoignages" class="testimonials">
+            <h2 class="section-title">TÉMOIGNAGES CLIENTS</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"J'étais sur le point de signer pour ma BMW X5 à 68 000€. En 2h, You² Cabinet a négocié 2 800€ de réduction supplémentaire grâce à sa connaissance du secteur automobile."</p>
+                    <p class="testimonial-author">- Marc D., Chef d'entreprise, Lyon</p>
+                    <p class="testimonial-saving">Économie : 2 800€</p>
+                </div>
+
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"Pour l'achat de notre villa à Cannes, ils ont obtenu 15 000€ de baisse en une journée. Leur expérience d'ancien marchand de biens fait la différence."</p>
+                    <p class="testimonial-author">- Sophie & Jean-Luc M., Retraités, Cannes</p>
+                    <p class="testimonial-saving">Économie : 15 000€</p>
+                </div>
+
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"Rénovation complète de ma cuisine. 24h avant de signer avec l'artisan, You² a négocié 4 200€ d'équipements supplémentaires. Leur expertise rénovation est impressionnante."</p>
+                    <p class="testimonial-author">- Valérie L., Cadre, Marseille</p>
+                    <p class="testimonial-saving">Économie : 4 200€</p>
+                </div>
+            </div>
+        </section>
 
         <section id="contact" class="services">
             <h2 class="section-title">CONTACT EXPRESS</h2>
@@ -216,7 +1764,52 @@
             </div>
         </section>
 
-        <!-- [Le reste de votre HTML reste inchangé] -->
+        <section id="cgv" class="services">
+            <h2 class="section-title">Mentions Légales & CGV</h2>
+            <div style="max-width: 800px; margin: 0 auto;">
+                
+                <div class="service-card" style="text-align: left; margin-bottom: 2rem;">
+                    <h3 class="service-title">Mentions Légales</h3>
+                    <div style="color: rgba(255, 255, 255, 0.9); line-height: 1.7;">
+                        <p><span style="color: #ffffff; font-weight: 600;">Raison sociale :</span> Leveo<br>
+                        <span style="color: #ffffff; font-weight: 600;">Nom commercial :</span> You²<br>
+                        <span style="color: #ffffff; font-weight: 600;">Adresse :</span> 205 Avenue de l'aube rouge, France<br>
+                        <span style="color: #ffffff; font-weight: 600;">Téléphone :</span> 06 37 46 95 32<br>
+                        <span style="color: #ffffff; font-weight: 600;">Email :</span> contact@you2cabinet.fr<br>
+                        <span style="color: #ffffff; font-weight: 600;">Directeur de publication :</span> Leveo</p>
+                    </div>
+                </div>
+
+                <div class="service-card" style="text-align: left; margin-bottom: 2rem;">
+                    <h3 class="service-title">Protection des Données (RGPD)</h3>
+                    <div style="color: rgba(255, 255, 255, 0.9); line-height: 1.7;">
+                        <p>Vos données personnelles sont collectées uniquement dans le cadre de nos services de négociation. Elles ne sont jamais vendues à des tiers. Vous disposez d'un droit d'accès, de rectification et de suppression de vos données. Contact DPO : contact@you2cabinet.fr</p>
+                    </div>
+                </div>
+                
+                <div class="service-card" style="text-align: left; margin-bottom: 2rem;">
+                    <h3 class="service-title">Politique des Cookies</h3>
+                    <div style="color: rgba(255, 255, 255, 0.9); line-height: 1.7;">
+                        <p>Ce site utilise des cookies pour améliorer votre expérience utilisateur et analyser notre trafic via Google Analytics et Microsoft Clarity. Ces outils nous aident à optimiser nos services. Vous pouvez refuser les cookies non-essentiels à tout moment.</p>
+                    </div>
+                </div>
+                
+                <div class="service-card" style="text-align: left; margin-bottom: 2rem;">
+                    <h3 class="service-title">Conditions Générales</h3>
+                    <div style="color: rgba(255, 255, 255, 0.9); line-height: 1.7;">
+                        <p style="margin-bottom: 1rem;"><span style="color: #ffffff; font-weight: 600;">Modalités d'intervention :</span> Leveo (You²) intervient exclusivement en tant que conseil en négociation commerciale. Nous ne sommes ni vendeurs ni intermédiaires commerciaux. Nos 18 années d'expérience dans l'automobile, l'immobilier et la rénovation nous permettent d'identifier les marges de négociation disponibles.</p>
+                        
+                        <p style="margin-bottom: 1rem;"><span style="color: #ffffff; font-weight: 600;">Responsabilité :</span> Notre responsabilité est couverte par une assurance responsabilité civile professionnelle. Nous nous engageons sur les moyens mis en œuvre, les résultats dépendant de l'acceptation du vendeur/fournisseur.</p>
+                        
+                        <p style="margin-bottom: 1rem;"><span style="color: #ffffff; font-weight: 600;">Tarification :</span> Notre rémunération est fixée à 15% des économies réellement obtenues et documentées. Sans économie prouvée, aucun frais n'est facturé.</p>
+                        
+                        <p style="margin-bottom: 1rem;"><span style="color: #ffffff; font-weight: 600;">Garanties :</span> Nous garantissons la confidentialité de vos informations et un conseil professionnel adapté à votre situation.</p>
+                        
+                        <p><span style="color: #ffffff; font-weight: 600;">Droit applicable :</span> Droit français. Juridiction compétente : Tribunaux français.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <!-- Contact Widget avec FAQ intégrée -->
@@ -290,69 +1883,391 @@
     </div>
 
     <footer class="footer">
-        <!-- [Votre footer existant reste inchangé] -->
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>You<span style="color: #D4AF37; font-weight: 900;">²</span></h3>
+                <p>Stratégie d'achat privée</p>
+                <p>Expert en négociation avant signature</p>
+                <p>18 années d'expérience secteur</p>
+                <p>205 Avenue de l'aube rouge</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Nos Services</h3>
+                <a href="#services">Négociation Automobile</a>
+                <a href="#services">Conseil Immobilier</a>
+                <a href="#services">Négociation Rénovation</a>
+                <a href="#services">Conseil Moto</a>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Contact Express</h3>
+                <a href="tel:+33637469532">06 37 46 95 32</a>
+                <a href="mailto:contact@you2cabinet.fr">contact@you2cabinet.fr</a>
+                <p>Intervention 24h/24</p>
+                <p>Réponse sous 2h maximum</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Informations</h3>
+                <a href="#cgv">Conditions générales</a>
+                <a href="#cgv">Mentions légales</a>
+                <p>Assurance RC professionnelle</p>
+                <p>Conseil en négociation commerciale</p>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2025 You² Cabinet. Tous droits réservés. | Expert en négociation avant signature</p>
+        </div>
     </footer>
 
-    <!-- SCRIPT JAVASCRIPT CORRIGÉ -->
     <script>
-        // ===== INITIALISATION =====
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialisation EmailJS
-            emailjs.init('Ol1JMnZD1wrlqrDrG').then(function() {
-                console.log('EmailJS initialisé avec succès');
-            }).catch(function(error) {
-                console.error("Erreur d'initialisation EmailJS:", error);
-            });
-
-            // Afficher le cookie banner après 2s
-            setTimeout(function() {
-                document.getElementById('cookieBanner').classList.add('show');
-            }, 2000);
-        });
-
-        // ===== VARIABLES GLOBALES =====
+        // Bot Contact Variables
         let currentStep = 1;
-        const totalSteps = 8;
         let userData = {};
         let isTyping = false;
 
-        // ===== FONCTIONS DU BOT =====
-        function selectSector(sector) {
+        const steps = {
+            1: { title: 'Secteur d\'intervention', progress: 12 },
+            2: { title: 'Budget prévu', progress: 25 },
+            3: { title: 'Délai avant signature', progress: 37 },
+            4: { title: 'Localisation', progress: 50 },
+            5: { title: 'Nom complet', progress: 62 },
+            6: { title: 'Numéro de téléphone', progress: 75 },
+            7: { title: 'Adresse email', progress: 87 },
+            8: { title: 'Description du projet', progress: 100 }
+        };
+
+        function updateProgress() {
+            const indicator = document.getElementById('stepIndicator');
+            const progressFill = document.getElementById('progressFill');
+            
+            indicator.textContent = `Étape ${currentStep}/8 - ${steps[currentStep].title}`;
+            progressFill.style.width = `${steps[currentStep].progress}%`;
+        }
+
+        function scrollToBottom() {
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function showTyping() {
             if (isTyping) return;
+            isTyping = true;
+            document.getElementById('typingIndicator').style.display = 'block';
+            scrollToBottom();
+        }
+
+        function hideTyping() {
+            isTyping = false;
+            document.getElementById('typingIndicator').style.display = 'none';
+        }
+
+        function addMessage(content, isUser = false) {
+            const chatMessages = document.getElementById('chatMessages');
+            const typingIndicator = document.getElementById('typingIndicator');
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+            
+            messageDiv.innerHTML = `
+                <div class="message-avatar">${isUser ? 'V' : 'Y²'}</div>
+                <div class="message-content">
+                    ${content}
+                </div>
+            `;
+            
+            chatMessages.insertBefore(messageDiv, typingIndicator);
+            scrollToBottom();
+        }
+
+        function botType(message, callback = null) {
+            showTyping();
+            setTimeout(() => {
+                hideTyping();
+                addMessage(message);
+                if (callback) callback();
+            }, 1500 + Math.random() * 1000);
+        }
+
+        function showQuickReplies(replies) {
+            const quickReplies = document.getElementById('quickReplies');
+            quickReplies.innerHTML = '';
+            
+            replies.forEach(reply => {
+                const button = document.createElement('div');
+                button.className = 'quick-reply';
+                button.innerHTML = reply.html;
+                button.onclick = reply.action;
+                quickReplies.appendChild(button);
+            });
+            
+            quickReplies.style.display = 'flex';
+            document.getElementById('chatInputContainer').style.display = 'none';
+        }
+
+        function showChatInput(placeholder = "Tapez votre réponse...") {
+            document.getElementById('quickReplies').style.display = 'none';
+            document.getElementById('chatInputContainer').style.display = 'block';
+            const input = document.getElementById('chatInput');
+            input.placeholder = placeholder;
+            input.focus();
+        }
+
+        function selectSector(sector) {
+            const sectorNames = {
+                'automobile': 'Automobile (BMW, Mercedes, Audi, Porsche)',
+                'immobilier': 'Immobilier (Villas, appartements)',
+                'renovation': 'Rénovation (Cuisines, salles de bains)',
+                'moto': 'Moto (Harley, BMW, Ducati, Indian)'
+            };
             
             userData.sector = sector;
-            updateStep(2);
-            addUserMessage(getSectorName(sector));
+            addMessage(`<p><strong>${sectorNames[sector]}</strong></p>`, true);
             
-            setTimeout(function() {
-                addBotMessage("Quel est votre budget approximatif ?");
-                showQuickReplies(['Moins de 10K€', '10K-50K€', '50K-100K€', 'Plus de 100K€']);
-            }, 800);
+            currentStep = 2;
+            updateProgress();
+            
+            botType('<p><strong>Excellent choix !</strong> Notre expertise dans ce secteur nous permet d\'identifier rapidement les marges de négociation.</p><p><strong>Quel est votre budget prévu exact ?</strong></p><p>Indiquez le montant précis pour que notre expert puisse adapter sa stratégie de négociation.</p>', () => {
+                showChatInput("Ex: 25000, 45000, 350000...");
+            });
         }
 
-        function updateStep(step) {
-            currentStep = step;
-            document.getElementById('stepIndicator').textContent = 
-                `Étape ${step}/${totalSteps} - ${getStepTitle(step)}`;
-            document.getElementById('progressFill').style.width = 
-                `${(step / totalSteps) * 100}%`;
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            addMessage(`<p><strong>${message}</strong></p>`, true);
+            input.value = '';
+            
+            processUserInput(message);
         }
 
-        function getStepTitle(step) {
-            const titles = {
-                1: "Secteur d'intervention",
-                2: "Budget prévu",
-                3: "Délai avant signature",
-                4: "Localisation",
-                5: "Nom complet",
-                6: "Numéro de téléphone",
-                7: "Adresse email",
-                8: "Description du projet"
+        function processUserInput(message) {
+            switch(currentStep) {
+                case 1:
+                    // Secteur (début du bot)
+                    let sector = '';
+                    let sectorName = '';
+                    
+                    if (message === '1' || message.toLowerCase().includes('automobile') || message.toLowerCase().includes('auto')) {
+                        sector = 'automobile';
+                        sectorName = 'Automobile (BMW, Mercedes, Audi, Porsche)';
+                    } else if (message === '2' || message.toLowerCase().includes('immobilier') || message.toLowerCase().includes('maison') || message.toLowerCase().includes('appartement')) {
+                        sector = 'immobilier';
+                        sectorName = 'Immobilier (Villas, appartements)';
+                    } else if (message === '3' || message.toLowerCase().includes('renovation') || message.toLowerCase().includes('cuisine') || message.toLowerCase().includes('travaux')) {
+                        sector = 'renovation';
+                        sectorName = 'Rénovation (Cuisines, salles de bains)';
+                    } else if (message === '4' || message.toLowerCase().includes('moto') || message.toLowerCase().includes('harley') || message.toLowerCase().includes('ducati')) {
+                        sector = 'moto';
+                        sectorName = 'Moto (Harley, BMW, Ducati, Indian)';
+                    } else {
+                        botType('<p><strong>Choix non reconnu.</strong></p><p>Tapez <strong>1</strong> pour Automobile, <strong>2</strong> pour Immobilier, <strong>3</strong> pour Rénovation ou <strong>4</strong> pour Moto.</p>', () => {
+                            showChatInput("Tapez 1, 2, 3 ou 4...");
+                        });
+                        return;
+                    }
+                    
+                    userData.sector = sector;
+                    currentStep = 2;
+                    updateProgress();
+                    
+                    botType('<p><strong>Excellent choix !</strong> Secteur sélectionné : ' + sectorName + '</p><p><strong>Quel est votre budget prévu exact ?</strong></p><p>Indiquez le montant précis pour que notre expert puisse adapter sa stratégie de négociation.</p>', () => {
+                        showChatInput("Ex: 25000, 45000, 350000...");
+                    });
+                    break;
+
+                case 2:
+                    // Budget
+                    const budgetText = message.replace(/[^\d]/g, '');
+                    const budgetNumber = parseInt(budgetText);
+                    
+                    if (!budgetText || budgetText.length === 0 || isNaN(budgetNumber) || budgetNumber < 100) {
+                        botType('<p><strong>Le budget semble incorrect.</strong></p><p>Pouvez-vous indiquer le montant en euros ?</p>', () => {
+                            showChatInput("Ex: 25000, 45000, 350000...");
+                        });
+                        return;
+                    }
+                    
+                    userData.budget = budgetNumber.toLocaleString('fr-FR') + '€';
+                    currentStep = 3;
+                    updateProgress();
+                    
+                    botType('<p><strong>Parfait !</strong> Budget noté : ' + userData.budget + '</p><p><strong>Dans combien de temps prévoyez-vous de signer ?</strong></p>', () => {
+                        showChatInput("Ex: 24h, 2 jours, cette semaine...");
+                    });
+                    break;
+
+                case 3:
+                    // Délai
+                    userData.timeline = message;
+                    
+                    if (message.toLowerCase().includes('24h') || message.toLowerCase().includes('demain') || message.toLowerCase().includes('urgent')) {
+                        userData.isUrgent = true;
+                    }
+                    
+                    currentStep = 4;
+                    updateProgress();
+                    
+                    let urgencyMsg = userData.isUrgent ? '<p><strong style="color: #D4AF37;">URGENCE DÉTECTÉE !</strong></p>' : '';
+                    
+                    botType(urgencyMsg + '<p><strong>Dans quelle région vous trouvez-vous ?</strong></p>', () => {
+                        showChatInput("Ex: Paris, Lyon, Marseille...");
+                    });
+                    break;
+
+                case 4:
+                    // Localisation
+                    userData.location = message;
+                    currentStep = 5;
+                    updateProgress();
+                    
+                    botType('<p><strong>Quel est votre nom complet ?</strong></p>', () => {
+                        showChatInput("Ex: Jean Dupont");
+                    });
+                    break;
+
+                case 5:
+                    // Nom
+                    userData.name = message;
+                    currentStep = 6;
+                    updateProgress();
+                    
+                    botType('<p><strong>Quel est votre numéro de téléphone ?</strong></p>', () => {
+                        showChatInput("Ex: 06 12 34 56 78");
+                    });
+                    break;
+
+                case 6:
+                    // Téléphone
+                    if (!/^(?:\+33|0)[1-9](?:[0-9]{8})$/.test(message.replace(/\s/g, ''))) {
+                        botType('<p><strong>Numéro incorrect.</strong></p><p>Format attendu : 06 12 34 56 78</p>', () => {
+                            showChatInput("Ex: 06 12 34 56 78");
+                        });
+                        return;
+                    }
+                    
+                    userData.phone = message;
+                    currentStep = 7;
+                    updateProgress();
+                    
+                    botType('<p><strong>Votre adresse email ?</strong></p>', () => {
+                        showChatInput("Ex: jean.dupont@email.com");
+                    });
+                    break;
+
+                case 7:
+                    // Email
+                    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(message)) {
+                        botType('<p><strong>Email incorrect.</strong></p><p>Vérifiez le format</p>', () => {
+                            showChatInput("Ex: jean.dupont@email.com");
+                        });
+                        return;
+                    }
+                    
+                    userData.email = message;
+                    currentStep = 8;
+                    updateProgress();
+                    
+                    botType('<p><strong>Décrivez votre projet :</strong></p><p>Que voulez-vous acheter ? Qui est le vendeur ? Où en êtes-vous ?</p>', () => {
+                        showChatInput("Décrivez votre projet...");
+                    });
+                    break;
+
+                case 8:
+                    // Description finale
+                    userData.description = message;
+                    document.getElementById('chatInputContainer').style.display = 'none';
+                    
+                    // Récapitulatif
+                    botType('<p><strong>RÉCAPITULATIF :</strong></p><p>• Secteur : ' + userData.sector + '</p><p>• Budget : ' + userData.budget + '</p><p>• Délai : ' + userData.timeline + '</p><p>• Région : ' + userData.location + '</p><p>• Contact : ' + userData.name + ' (' + userData.phone + ')</p>', () => {
+                        
+                        setTimeout(() => {
+                            // ENVOI DE L'EMAIL via MAILTO - SANS EMAILJS
+                            sendEmailNotification(userData);
+                            
+                            if (userData.isUrgent) {
+                                botType('<p><strong>⚡ URGENCE !</strong></p><p>Notre expert va vous appeler dans les 30 minutes.</p><p>Gardez votre téléphone à portée !</p>');
+                            } else {
+                                botType('<p><strong>À BIENTÔT ' + userData.name.split(' ')[0].toUpperCase() + ' !</strong></p><p>Notre expert va vous recontacter rapidement.</p>');
+                            }
+                        }, 1500);
+                    });
+                    
+                    console.log('Données collectées:', userData);
+                    break;
+            }
+        }
+
+        function showFinalOptions(isUrgent) {
+            showQuickReplies([
+                { 
+                    html: '<strong>NOUVELLE DEMANDE</strong>',
+                    action: () => {
+                        resetBot();
+                    }
+                }
+            ]);
+        }
+
+        function resetBot() {
+            addMessage('<p><strong>Nouveau projet</strong></p>', true);
+            userData = {};
+            currentStep = 1;
+            updateProgress();
+            
+            botType('<p><strong>Nouveau projet ?</strong></p><p><strong>Dans quel secteur cette fois ?</strong></p>', () => {
+                document.getElementById('quickReplies').style.display = 'grid';
+                document.getElementById('chatInputContainer').style.display = 'none';
+            });
+        }
+
+        // FONCTION D'ENVOI EMAIL via EmailJS - CORRIGÉE
+        function sendEmailNotification(data) {
+            // Configuration EmailJS avec VOS VRAIS CODES
+            emailjs.init('Ol1JMnZD1wrlqrDrG'); // ✅ Public Key corrigée
+            
+            const templateParams = {
+                to_email: 'directionleveo@gmail.com', // Votre email
+                from_name: data.name,
+                secteur: getSectorFullName(data.sector),
+                budget: data.budget,
+                delai: data.timeline,
+                region: data.location,
+                nom_complet: data.name,
+                telephone: data.phone,
+                email_client: data.email,
+                description_projet: data.description,
+                urgence: data.isUrgent ? '🚨 DEMANDE URGENTE - Rappel sous 30min' : 'Demande normale',
+                date_demande: new Date().toLocaleString('fr-FR'),
+                subject: `${data.isUrgent ? '🚨 URGENCE' : '📝 Nouvelle demande'} You² Cabinet - ${getSectorFullName(data.sector)} - ${data.budget}`
             };
-            return titles[step] || "";
+
+            emailjs.send('service_j1fujkb', 'template_tvev2lc', templateParams)
+                .then(function(response) {
+                    console.log('✅ Email envoyé avec succès!', response.status, response.text);
+                    
+                    // Notification de confirmation dans le bot
+                    setTimeout(() => {
+                        botType('<p><strong>✅ Demande transmise avec succès !</strong></p><p>Vous recevrez une confirmation par email.</p>');
+                    }, 3000);
+                    
+                }, function(error) {
+                    console.error('❌ Erreur lors de l\'envoi de l\'email:', error);
+                    
+                    // En cas d'erreur, afficher un message alternatif
+                    setTimeout(() => {
+                        botType('<p><strong>📞 Pour un traitement immédiat, appelez-nous :</strong></p><p><a href="tel:+33637469532" style="color: #D4AF37; font-weight: bold;">06 37 46 95 32</a></p>');
+                    }, 3000);
+                });
         }
 
-        function getSectorName(sector) {
+        // Fonction utilitaire pour les noms complets des secteurs
+        function getSectorFullName(sector) {
             const sectors = {
                 'automobile': 'Automobile (BMW, Mercedes, Audi, Porsche)',
                 'immobilier': 'Immobilier (Villas, appartements standing)',
@@ -362,245 +2277,207 @@
             return sectors[sector] || sector;
         }
 
-        function addUserMessage(content) {
-            const chat = document.getElementById('chatMessages');
-            const msgDiv = document.createElement('div');
-            msgDiv.className = 'message user-message';
-            msgDiv.innerHTML = `
-                <div class="message-avatar">VOUS</div>
-                <div class="message-content">${content}</div>
-            `;
-            chat.appendChild(msgDiv);
-            chat.scrollTop = chat.scrollHeight;
-        }
-
-        function addBotMessage(content) {
-            const chat = document.getElementById('chatMessages');
-            const msgDiv = document.createElement('div');
-            msgDiv.className = 'message bot-message';
-            msgDiv.innerHTML = `
-                <div class="message-avatar">Y²</div>
-                <div class="message-content">${content}</div>
-            `;
-            chat.appendChild(msgDiv);
-            chat.scrollTop = chat.scrollHeight;
-        }
-
-        function showQuickReplies(replies) {
-            const quickReplies = document.getElementById('quickReplies');
-            quickReplies.innerHTML = '';
-            
-            replies.forEach(reply => {
-                const btn = document.createElement('div');
-                btn.className = 'quick-reply';
-                btn.innerHTML = `<strong>${reply}</strong>`;
-                btn.onclick = function() { processQuickReply(reply); };
-                quickReplies.appendChild(btn);
-            });
-        }
-
-        function processQuickReply(reply) {
-            // Stocker la réponse selon l'étape actuelle
-            switch(currentStep) {
-                case 2: userData.budget = reply; break;
-                case 3: userData.timeline = reply; break;
-                // ... autres cas
-            }
-            
-            updateStep(currentStep + 1);
-            showNextQuestion();
-        }
-
-        function showNextQuestion() {
-            // Masquer les réponses rapides pendant le traitement
-            document.getElementById('quickReplies').innerHTML = '';
-            
-            switch(currentStep) {
-                case 2:
-                    addBotMessage("Quel est votre budget approximatif ?");
-                    showQuickReplies(['Moins de 10K€', '10K-50K€', '50K-100K€', 'Plus de 100K€']);
-                    break;
-                case 3:
-                    addBotMessage("Quand prévoyez-vous de signer ?");
-                    showQuickReplies(['Dans 24h', 'Dans 48h', 'Cette semaine', 'Date indéterminée']);
-                    break;
-                case 4:
-                    addBotMessage("Dans quelle région se situe votre projet ?");
-                    showInputField();
-                    break;
-                // ... autres étapes
-                case 8:
-                    finalizeSubmission();
-                    break;
-            }
-        }
-
-        function showInputField() {
-            document.getElementById('quickReplies').innerHTML = '';
-            document.getElementById('chatInputContainer').style.display = 'block';
-            document.getElementById('chatInput').focus();
-        }
-
-        function sendMessage() {
-            const input = document.getElementById('chatInput');
-            const message = input.value.trim();
-            
-            if (message) {
-                addUserMessage(message);
-                
-                // Stocker la réponse selon l'étape
-                switch(currentStep) {
-                    case 4: userData.location = message; break;
-                    case 5: userData.name = message; break;
-                    case 6: userData.phone = message; break;
-                    case 7: userData.email = message; break;
-                    case 8: userData.description = message; break;
+        // Animation du compteur
+        function animateCounter() {
+            const counter = document.getElementById('totalSavings');
+            const target = 847293;
+            let current = 0;
+            const increment = target / 150;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
                 }
-                
-                input.value = '';
-                document.getElementById('chatInputContainer').style.display = 'none';
-                
-                updateStep(currentStep + 1);
-                showNextQuestion();
-            }
+                counter.textContent = Math.floor(current).toLocaleString('fr-FR') + ' €';
+            }, 20);
         }
 
-        async function finalizeSubmission() {
-            // Validation finale
-            if (!userData.phone || !userData.email) {
-                addBotMessage("❌ Merci de fournir au moins un numéro de téléphone et un email pour que nous puissions vous contacter.");
-                return;
-            }
-
-            // Envoi des données
-            try {
-                const response = await emailjs.send(
-                    'service_j1fujkb',
-                    'template_tvev2lc',
-                    {
-                        to_email: 'directionleveo@gmail.com',
-                        from_name: userData.name || 'Client You²',
-                        secteur: getSectorName(userData.sector),
-                        budget: userData.budget || 'Non précisé',
-                        delai: userData.timeline || 'Non précisé',
-                        region: userData.location || 'Non précisé',
-                        telephone: userData.phone,
-                        email_client: userData.email,
-                        description: userData.description || 'Aucune description',
-                        date_demande: new Date().toLocaleString('fr-FR')
+        // Démarrage de l'animation au chargement
+        window.addEventListener('load', () => {
+            // Retirer la classe preload-animations pour activer les animations
+            document.body.classList.remove('preload-animations');
+            // Démarrer l'animation du compteur
+            animateCounter();
+            // Initialiser le bot
+            updateProgress();
+            // Afficher les boutons de secteur dès le début
+            document.getElementById('quickReplies').style.display = 'grid';
+            document.getElementById('chatInputContainer').style.display = 'none';
+            
+            // Fermer le menu mobile en cliquant sur un lien
+            const navLinks = document.querySelectorAll('.nav-links a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    const navLinksContainer = document.getElementById('navLinks');
+                    const menuBtn = document.querySelector('.mobile-menu-btn');
+                    
+                    if (navLinksContainer && navLinksContainer.classList.contains('mobile-open')) {
+                        navLinksContainer.classList.remove('mobile-open');
+                        if (menuBtn) {
+                            menuBtn.classList.remove('active');
+                            menuBtn.setAttribute('aria-expanded', 'false');
+                        }
                     }
-                );
+                });
+            });
+        });
 
-                console.log('Email envoyé avec succès:', response);
-                showSuccessMessage();
-            } catch (error) {
-                console.error("Erreur d'envoi:", error);
-                showErrorMessage();
+        // Gestion de l'entrée avec Entrée
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatInput = document.getElementById('chatInput');
+            if (chatInput) {
+                chatInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        sendMessage();
+                    }
+                });
             }
-        }
+        });
 
-        function showSuccessMessage() {
-            addBotMessage(`
-                <p><strong>✅ Demande transmise avec succès !</strong></p>
-                <p>Notre expert vous contactera dans les plus brefs délais.</p>
-                <p>Merci pour votre confiance.</p>
-            `);
-        }
-
-        function showErrorMessage() {
-            addBotMessage(`
-                <p><strong>❌ Problème technique</strong></p>
-                <p>Veuillez nous contacter directement par téléphone :</p>
-                <p><a href="tel:+33637469532" style="color: #D4AF37; font-weight: bold;">06 37 46 95 32</a></p>
-            `);
-        }
-
-        // ===== FONCTIONS DU FAQ WIDGET =====
+        // FAQ Widget functionality
         function toggleFaqWidget() {
             const widget = document.getElementById('faqWidget');
-            if (widget.style.display === 'none') {
-                widget.style.display = 'block';
-                setTimeout(() => {
-                    widget.classList.add('show');
-                }, 10);
-            } else {
+            if (widget.style.display === 'block') {
                 widget.classList.remove('show');
                 setTimeout(() => {
                     widget.style.display = 'none';
                 }, 300);
+            } else {
+                widget.style.display = 'block';
+                setTimeout(() => {
+                    widget.classList.add('show');
+                }, 10);
             }
         }
 
         function addBotConversation(question, answer) {
-            const faqChat = document.getElementById('faqChatMessages');
+            const messagesContainer = document.getElementById('faqChatMessages');
+            const typingIndicator = document.getElementById('faqTypingIndicator');
             
-            // Ajouter la question
-            const userMsg = document.createElement('div');
-            userMsg.className = 'faq-message user';
-            userMsg.innerHTML = `<div class="faq-message-content">${question}</div>`;
-            faqChat.appendChild(userMsg);
+            // Add user message
+            const userMessage = document.createElement('div');
+            userMessage.className = 'faq-message user';
+            userMessage.innerHTML = `
+                <div class="faq-message-content">
+                    ${question}
+                </div>
+            `;
+            messagesContainer.insertBefore(userMessage, typingIndicator);
             
-            // Simulation de "typing"
-            const typing = document.getElementById('faqTypingIndicator');
-            typing.style.display = 'block';
-            faqChat.scrollTop = faqChat.scrollHeight;
+            // Show typing indicator
+            typingIndicator.style.display = 'block';
             
-            // Ajouter la réponse après un délai
+            // Scroll to bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            // Simulate typing delay and show response
             setTimeout(() => {
-                typing.style.display = 'none';
+                typingIndicator.style.display = 'none';
                 
-                const botMsg = document.createElement('div');
-                botMsg.className = 'faq-message bot';
-                botMsg.innerHTML = `<div class="faq-message-content">${answer}</div>`;
-                faqChat.appendChild(botMsg);
+                const botMessage = document.createElement('div');
+                botMessage.className = 'faq-message bot';
+                botMessage.innerHTML = `
+                    <div class="faq-message-content">
+                        ${answer}
+                    </div>
+                `;
+                messagesContainer.insertBefore(botMessage, typingIndicator);
                 
-                faqChat.scrollTop = faqChat.scrollHeight;
+                // Scroll to bottom
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
             }, 1500);
         }
 
-        // ===== GESTION DES COOKIES =====
+        // Menu mobile
+        function toggleMobileMenu() {
+            const navLinks = document.getElementById('navLinks');
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            
+            navLinks.classList.toggle('mobile-open');
+            menuBtn.classList.toggle('active');
+            
+            const isExpanded = navLinks.classList.contains('mobile-open');
+            menuBtn.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+        }
+
+        // Scroll smooth pour les liens d'ancrage
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const target = document.querySelector(targetId);
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        });
+
+        // Analytics et tracking
+        function trackEvent(action, category, label) {
+            console.log('Event tracked:', action, category, label);
+            // Ici vous pouvez ajouter votre code Google Analytics
+            // gtag('event', action, { category: category, label: label });
+        }
+
+        // Tracking des clics sur les CTA
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.cta-primary').forEach(button => {
+                button.addEventListener('click', function() {
+                    trackEvent('click', 'CTA', this.textContent);
+                });
+            });
+
+            // Tracking des appels téléphoniques
+            document.querySelectorAll('a[href^="tel:"]').forEach(link => {
+                link.addEventListener('click', function() {
+                    trackEvent('click', 'phone', this.href);
+                });
+            });
+
+            // Tracking des emails
+            document.querySelectorAll('a[href^="mailto:"]').forEach(link => {
+                link.addEventListener('click', function() {
+                    trackEvent('click', 'email', this.href);
+                });
+            });
+        });
+
+        // Cookie management
         function acceptCookies() {
             document.getElementById('cookieBanner').classList.remove('show');
-            // Implémentez votre suivi ici
+            console.log('Cookies acceptés');
         }
 
         function declineCookies() {
             document.getElementById('cookieBanner').classList.remove('show');
+            console.log('Cookies refusés');
         }
 
-        // ===== MENU MOBILE =====
-        function toggleMobileMenu() {
-            const btn = document.querySelector('.mobile-menu-btn');
-            const menu = document.getElementById('navLinks');
-            
-            btn.classList.toggle('active');
-            menu.classList.toggle('mobile-open');
-            
-            // Mise à jour de l'accessibilité
-            const isExpanded = btn.getAttribute('aria-expanded') === 'true';
-            btn.setAttribute('aria-expanded', !isExpanded);
-        }
+        // Show cookie banner if not decided
+        setTimeout(() => {
+            document.getElementById('cookieBanner').classList.add('show');
+        }, 2000);
 
-        // ===== ANIMATION DU COMPTEUR =====
-        function animateCounter() {
-            const counter = document.getElementById('totalSavings');
-            const target = 847000;
-            let current = 0;
-            const increment = target / 100;
-            
-            const timer = setInterval(() => {
-                current += increment;
-                counter.textContent = Math.floor(current).toLocaleString('fr-FR') + ' €';
+        // Fermer les widgets en cliquant à l'extérieur
+        document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('click', function(e) {
+                const faqWidget = document.getElementById('faqWidget');
+                const contactWidget = document.querySelector('.contact-widget');
                 
-                if (current >= target) {
-                    clearInterval(timer);
-                    counter.textContent = target.toLocaleString('fr-FR') + ' €';
+                if (faqWidget && contactWidget && !contactWidget.contains(e.target)) {
+                    faqWidget.style.display = 'none';
                 }
-            }, 20);
-        }
+            });
+        });
 
-        // Démarrer l'animation du compteur
-        window.onload = animateCounter;
+        // Debug console
+        console.log('🏆 You² Cabinet Bot - Version Complète et Corrigée');
     </script>
 </body>
 </html>
