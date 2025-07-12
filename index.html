@@ -315,6 +315,57 @@
             });
         }
 
+        // FONCTION D'ENVOI EMAIL via EmailJS
+        function sendEmailNotification(data) {
+            // Configuration EmailJS avec VOS VRAIS CODES
+            emailjs.init('Ol1JMnZD1wr1qrDrG'); // Votre Public Key
+            
+            const templateParams = {
+                to_email: 'directionleveo@gmail.com', // Votre email
+                from_name: data.name,
+                secteur: getSectorFullName(data.sector),
+                budget: data.budget,
+                delai: data.timeline,
+                region: data.location,
+                nom_complet: data.name,
+                telephone: data.phone,
+                email_client: data.email,
+                description_projet: data.description,
+                urgence: data.isUrgent ? '🚨 DEMANDE URGENTE - Rappel sous 30min' : 'Demande normale',
+                date_demande: new Date().toLocaleString('fr-FR'),
+                subject: `${data.isUrgent ? '🚨 URGENCE' : '📝 Nouvelle demande'} You² Cabinet - ${getSectorFullName(data.sector)} - ${data.budget}`
+            };
+
+            emailjs.send('service_j1fujkb', 'template_tvev2lc', templateParams)
+                .then(function(response) {
+                    console.log('✅ Email envoyé avec succès!', response.status, response.text);
+                    
+                    // Notification de confirmation dans le bot
+                    setTimeout(() => {
+                        botType('<p><strong>✅ Demande transmise avec succès !</strong></p><p>Vous recevrez une confirmation par email.</p>');
+                    }, 3000);
+                    
+                }, function(error) {
+                    console.error('❌ Erreur lors de l\'envoi de l\'email:', error);
+                    
+                    // En cas d'erreur, afficher un message alternatif
+                    setTimeout(() => {
+                        botType('<p><strong>📞 Pour un traitement immédiat, appelez-nous :</strong></p><p><a href="tel:+33637469532" style="color: #D4AF37; font-weight: bold;">06 37 46 95 32</a></p>');
+                    }, 3000);
+                });
+        }
+
+        // Fonction utilitaire pour les noms complets des secteurs
+        function getSectorFullName(sector) {
+            const sectors = {
+                'automobile': 'Automobile (BMW, Mercedes, Audi, Porsche)',
+                'immobilier': 'Immobilier (Villas, appartements standing)',
+                'renovation': 'Rénovation (Cuisines, salles de bains)',
+                'moto': 'Moto (Harley, BMW, Ducati, Indian)'
+            };
+            return sectors[sector] || sector;
+        }
+
         // Animation du compteur
         function animateCounter() {
             const counter = document.getElementById('totalSavings');
