@@ -41,8 +41,8 @@
     <!-- Google Fonts avec display=swap pour performance -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- EmailJS pour l'envoi d'emails - URL autorisée par CSP -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/emailjs/4.0.2/email.min.js"></script>
+    <!-- EmailJS - VERSION CORRIGÉE -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     
     <!-- Schema.org pour SEO local -->
     <script type="application/ld+json">
@@ -1922,8 +1922,64 @@
         </div>
     </footer>
 
+    <!-- SCRIPT JAVASCRIPT CORRIGÉ GARANTI -->
     <script>
-        // Bot Contact Variables
+        // ===== VÉRIFICATION ET INITIALISATION EMAILJS =====
+        let emailJSReady = false;
+        
+        // Vérification du chargement EmailJS
+        function checkEmailJSStatus() {
+            if (typeof emailjs === 'undefined') {
+                console.error('❌ EmailJS not loaded!');
+                return false;
+            }
+            console.log('✅ EmailJS loaded successfully');
+            return true;
+        }
+
+        // Initialisation sécurisée d'EmailJS
+        function initializeEmailJS() {
+            return new Promise((resolve, reject) => {
+                if (typeof emailjs !== 'undefined') {
+                    try {
+                        emailjs.init('Ol1JMnZD1wrlqrDrG');
+                        console.log('✅ EmailJS initialized');
+                        emailJSReady = true;
+                        resolve(true);
+                    } catch (error) {
+                        console.error('❌ EmailJS init failed:', error);
+                        emailJSReady = false;
+                        reject(error);
+                    }
+                } else {
+                    // Attendre le chargement
+                    let attempts = 0;
+                    const checkInterval = setInterval(() => {
+                        attempts++;
+                        if (typeof emailjs !== 'undefined') {
+                            clearInterval(checkInterval);
+                            try {
+                                emailjs.init('Ol1JMnZD1wrlqrDrG');
+                                console.log('✅ EmailJS initialized after wait');
+                                emailJSReady = true;
+                                resolve(true);
+                            } catch (error) {
+                                console.error('❌ EmailJS init failed after wait:', error);
+                                emailJSReady = false;
+                                reject(error);
+                            }
+                        } else if (attempts > 50) { // 5 secondes max
+                            clearInterval(checkInterval);
+                            console.error('❌ EmailJS loading timeout');
+                            emailJSReady = false;
+                            reject(new Error('EmailJS loading timeout'));
+                        }
+                    }, 100);
+                }
+            });
+        }
+
+        // ===== BOT CONTACT VARIABLES =====
         let currentStep = 1;
         let userData = {};
         let isTyping = false;
@@ -1938,6 +1994,8 @@
             7: { title: 'Adresse email', progress: 87 },
             8: { title: 'Description du projet', progress: 100 }
         };
+
+        // ===== FONCTIONS BOT =====
 
         function updateProgress() {
             const indicator = document.getElementById('stepIndicator');
@@ -2046,172 +2104,184 @@
             processUserInput(message);
         }
 
-        function processUserInput(message) {
-            switch(currentStep) {
-                case 1:
-                    // Secteur (début du bot)
-                    let sector = '';
-                    let sectorName = '';
-                    
-                    if (message === '1' || message.toLowerCase().includes('automobile') || message.toLowerCase().includes('auto')) {
-                        sector = 'automobile';
-                        sectorName = 'Automobile (BMW, Mercedes, Audi, Porsche)';
-                    } else if (message === '2' || message.toLowerCase().includes('immobilier') || message.toLowerCase().includes('maison') || message.toLowerCase().includes('appartement')) {
-                        sector = 'immobilier';
-                        sectorName = 'Immobilier (Villas, appartements)';
-                    } else if (message === '3' || message.toLowerCase().includes('renovation') || message.toLowerCase().includes('cuisine') || message.toLowerCase().includes('travaux')) {
-                        sector = 'renovation';
-                        sectorName = 'Rénovation (Cuisines, salles de bains)';
-                    } else if (message === '4' || message.toLowerCase().includes('moto') || message.toLowerCase().includes('harley') || message.toLowerCase().includes('ducati')) {
-                        sector = 'moto';
-                        sectorName = 'Moto (Harley, BMW, Ducati, Indian)';
-                    } else {
-                        botType('<p><strong>Choix non reconnu.</strong></p><p>Tapez <strong>1</strong> pour Automobile, <strong>2</strong> pour Immobilier, <strong>3</strong> pour Rénovation ou <strong>4</strong> pour Moto.</p>', () => {
-                            showChatInput("Tapez 1, 2, 3 ou 4...");
-                        });
-                        return;
-                    }
-                    
-                    userData.sector = sector;
-                    currentStep = 2;
-                    updateProgress();
-                    
-                    botType('<p><strong>Excellent choix !</strong> Secteur sélectionné : ' + sectorName + '</p><p><strong>Quel est votre budget prévu exact ?</strong></p><p>Indiquez le montant précis pour que notre expert puisse adapter sa stratégie de négociation.</p>', () => {
-                        showChatInput("Ex: 25000, 45000, 350000...");
-                    });
-                    break;
-
-                case 2:
-                    // Budget
-                    const budgetText = message.replace(/[^\d]/g, '');
-                    const budgetNumber = parseInt(budgetText);
-                    
-                    if (!budgetText || budgetText.length === 0 || isNaN(budgetNumber) || budgetNumber < 100) {
-                        botType('<p><strong>Le budget semble incorrect.</strong></p><p>Pouvez-vous indiquer le montant en euros ?</p>', () => {
-                            showChatInput("Ex: 25000, 45000, 350000...");
-                        });
-                        return;
-                    }
-                    
-                    userData.budget = budgetNumber.toLocaleString('fr-FR') + '€';
-                    currentStep = 3;
-                    updateProgress();
-                    
-                    botType('<p><strong>Parfait !</strong> Budget noté : ' + userData.budget + '</p><p><strong>Dans combien de temps prévoyez-vous de signer ?</strong></p>', () => {
-                        showChatInput("Ex: 24h, 2 jours, cette semaine...");
-                    });
-                    break;
-
-                case 3:
-                    // Délai
-                    userData.timeline = message;
-                    
-                    if (message.toLowerCase().includes('24h') || message.toLowerCase().includes('demain') || message.toLowerCase().includes('urgent')) {
-                        userData.isUrgent = true;
-                    }
-                    
-                    currentStep = 4;
-                    updateProgress();
-                    
-                    let urgencyMsg = userData.isUrgent ? '<p><strong style="color: #D4AF37;">URGENCE DÉTECTÉE !</strong></p>' : '';
-                    
-                    botType(urgencyMsg + '<p><strong>Dans quelle région vous trouvez-vous ?</strong></p>', () => {
-                        showChatInput("Ex: Paris, Lyon, Marseille...");
-                    });
-                    break;
-
-                case 4:
-                    // Localisation
-                    userData.location = message;
-                    currentStep = 5;
-                    updateProgress();
-                    
-                    botType('<p><strong>Quel est votre nom complet ?</strong></p>', () => {
-                        showChatInput("Ex: Jean Dupont");
-                    });
-                    break;
-
-                case 5:
-                    // Nom
-                    userData.name = message;
-                    currentStep = 6;
-                    updateProgress();
-                    
-                    botType('<p><strong>Quel est votre numéro de téléphone ?</strong></p>', () => {
-                        showChatInput("Ex: 06 12 34 56 78");
-                    });
-                    break;
-
-                case 6:
-                    // Téléphone
-                    if (!/^(?:\+33|0)[1-9](?:[0-9]{8})$/.test(message.replace(/\s/g, ''))) {
-                        botType('<p><strong>Numéro incorrect.</strong></p><p>Format attendu : 06 12 34 56 78</p>', () => {
-                            showChatInput("Ex: 06 12 34 56 78");
-                        });
-                        return;
-                    }
-                    
-                    userData.phone = message;
-                    currentStep = 7;
-                    updateProgress();
-                    
-                    botType('<p><strong>Votre adresse email ?</strong></p>', () => {
-                        showChatInput("Ex: jean.dupont@email.com");
-                    });
-                    break;
-
-                case 7:
-                    // Email
-                    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(message)) {
-                        botType('<p><strong>Email incorrect.</strong></p><p>Vérifiez le format</p>', () => {
-                            showChatInput("Ex: jean.dupont@email.com");
-                        });
-                        return;
-                    }
-                    
-                    userData.email = message;
-                    currentStep = 8;
-                    updateProgress();
-                    
-                    botType('<p><strong>Décrivez votre projet :</strong></p><p>Que voulez-vous acheter ? Qui est le vendeur ? Où en êtes-vous ?</p>', () => {
-                        showChatInput("Décrivez votre projet...");
-                    });
-                    break;
-
-                case 8:
-                    // Description finale
-                    userData.description = message;
-                    document.getElementById('chatInputContainer').style.display = 'none';
-                    
-                    // Récapitulatif
-                    botType('<p><strong>RÉCAPITULATIF :</strong></p><p>• Secteur : ' + userData.sector + '</p><p>• Budget : ' + userData.budget + '</p><p>• Délai : ' + userData.timeline + '</p><p>• Région : ' + userData.location + '</p><p>• Contact : ' + userData.name + ' (' + userData.phone + ')</p>', () => {
-                        
-                        setTimeout(() => {
-                            // ENVOI DE L'EMAIL via EmailJS
-                            sendEmailNotification(userData);
-                            
-                            if (userData.isUrgent) {
-                                botType('<p><strong>⚡ URGENCE !</strong></p><p>Notre expert va vous appeler dans les 30 minutes.</p><p>Gardez votre téléphone à portée !</p>');
-                            } else {
-                                botType('<p><strong>À BIENTÔT ' + userData.name.split(' ')[0].toUpperCase() + ' !</strong></p><p>Notre expert va vous recontacter rapidement.</p>');
-                            }
-                        }, 1500);
-                    });
-                    
-                    console.log('Données collectées:', userData);
-                    break;
-            }
+        // Validation téléphone corrigée
+        function validatePhoneNumber(phone) {
+            const cleanPhone = phone.replace(/[\s\-\.]/g, '');
+            const patterns = [
+                /^0[1-9][0-9]{8}$/, // Format 0X XX XX XX XX
+                /^\+33[1-9][0-9]{8}$/, // Format +33X XX XX XX XX
+                /^33[1-9][0-9]{8}$/ // Format 33X XX XX XX XX
+            ];
+            
+            return patterns.some(pattern => pattern.test(cleanPhone));
         }
 
-        function showFinalOptions(isUrgent) {
-            showQuickReplies([
-                { 
-                    html: '<strong>NOUVELLE DEMANDE</strong>',
-                    action: () => {
-                        resetBot();
-                    }
+        // Validation email
+        function validateEmail(email) {
+            const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+            return emailRegex.test(email);
+        }
+
+        function processUserInput(message) {
+            try {
+                switch(currentStep) {
+                    case 1:
+                        // Secteur (début du bot)
+                        let sector = '';
+                        let sectorName = '';
+                        
+                        if (message === '1' || message.toLowerCase().includes('automobile') || message.toLowerCase().includes('auto')) {
+                            sector = 'automobile';
+                            sectorName = 'Automobile (BMW, Mercedes, Audi, Porsche)';
+                        } else if (message === '2' || message.toLowerCase().includes('immobilier') || message.toLowerCase().includes('maison') || message.toLowerCase().includes('appartement')) {
+                            sector = 'immobilier';
+                            sectorName = 'Immobilier (Villas, appartements)';
+                        } else if (message === '3' || message.toLowerCase().includes('renovation') || message.toLowerCase().includes('cuisine') || message.toLowerCase().includes('travaux')) {
+                            sector = 'renovation';
+                            sectorName = 'Rénovation (Cuisines, salles de bains)';
+                        } else if (message === '4' || message.toLowerCase().includes('moto') || message.toLowerCase().includes('harley') || message.toLowerCase().includes('ducati')) {
+                            sector = 'moto';
+                            sectorName = 'Moto (Harley, BMW, Ducati, Indian)';
+                        } else {
+                            botType('<p><strong>Choix non reconnu.</strong></p><p>Tapez <strong>1</strong> pour Automobile, <strong>2</strong> pour Immobilier, <strong>3</strong> pour Rénovation ou <strong>4</strong> pour Moto.</p>', () => {
+                                showChatInput("Tapez 1, 2, 3 ou 4...");
+                            });
+                            return;
+                        }
+                        
+                        userData.sector = sector;
+                        currentStep = 2;
+                        updateProgress();
+                        
+                        botType('<p><strong>Excellent choix !</strong> Secteur sélectionné : ' + sectorName + '</p><p><strong>Quel est votre budget prévu exact ?</strong></p><p>Indiquez le montant précis pour que notre expert puisse adapter sa stratégie de négociation.</p>', () => {
+                            showChatInput("Ex: 25000, 45000, 350000...");
+                        });
+                        break;
+
+                    case 2:
+                        // Budget
+                        const budgetText = message.replace(/[^\d]/g, '');
+                        const budgetNumber = parseInt(budgetText);
+                        
+                        if (!budgetText || budgetText.length === 0 || isNaN(budgetNumber) || budgetNumber < 100) {
+                            botType('<p><strong>Le budget semble incorrect.</strong></p><p>Pouvez-vous indiquer le montant en euros ?</p>', () => {
+                                showChatInput("Ex: 25000, 45000, 350000...");
+                            });
+                            return;
+                        }
+                        
+                        userData.budget = budgetNumber.toLocaleString('fr-FR') + '€';
+                        currentStep = 3;
+                        updateProgress();
+                        
+                        botType('<p><strong>Parfait !</strong> Budget noté : ' + userData.budget + '</p><p><strong>Dans combien de temps prévoyez-vous de signer ?</strong></p>', () => {
+                            showChatInput("Ex: 24h, 2 jours, cette semaine...");
+                        });
+                        break;
+
+                    case 3:
+                        // Délai
+                        userData.timeline = message;
+                        
+                        if (message.toLowerCase().includes('24h') || message.toLowerCase().includes('demain') || message.toLowerCase().includes('urgent')) {
+                            userData.isUrgent = true;
+                        }
+                        
+                        currentStep = 4;
+                        updateProgress();
+                        
+                        let urgencyMsg = userData.isUrgent ? '<p><strong style="color: #D4AF37;">URGENCE DÉTECTÉE !</strong></p>' : '';
+                        
+                        botType(urgencyMsg + '<p><strong>Dans quelle région vous trouvez-vous ?</strong></p>', () => {
+                            showChatInput("Ex: Paris, Lyon, Marseille...");
+                        });
+                        break;
+
+                    case 4:
+                        // Localisation
+                        userData.location = message;
+                        currentStep = 5;
+                        updateProgress();
+                        
+                        botType('<p><strong>Quel est votre nom complet ?</strong></p>', () => {
+                            showChatInput("Ex: Jean Dupont");
+                        });
+                        break;
+
+                    case 5:
+                        // Nom
+                        userData.name = message;
+                        currentStep = 6;
+                        updateProgress();
+                        
+                        botType('<p><strong>Quel est votre numéro de téléphone ?</strong></p>', () => {
+                            showChatInput("Ex: 06 12 34 56 78");
+                        });
+                        break;
+
+                    case 6:
+                        // Téléphone - VALIDATION CORRIGÉE
+                        if (!validatePhoneNumber(message)) {
+                            botType('<p><strong>Format téléphone invalide.</strong></p><p>Exemples acceptés :<br>• 06 12 34 56 78<br>• 06.12.34.56.78<br>• +33 6 12 34 56 78</p>', () => {
+                                showChatInput("Ex: 06 12 34 56 78");
+                            });
+                            return;
+                        }
+                        
+                        userData.phone = message;
+                        currentStep = 7;
+                        updateProgress();
+                        
+                        botType('<p><strong>Votre adresse email ?</strong></p>', () => {
+                            showChatInput("Ex: jean.dupont@email.com");
+                        });
+                        break;
+
+                    case 7:
+                        // Email - VALIDATION CORRIGÉE
+                        if (!validateEmail(message)) {
+                            botType('<p><strong>Email incorrect.</strong></p><p>Vérifiez le format (ex: nom@email.com)</p>', () => {
+                                showChatInput("Ex: jean.dupont@email.com");
+                            });
+                            return;
+                        }
+                        
+                        userData.email = message;
+                        currentStep = 8;
+                        updateProgress();
+                        
+                        botType('<p><strong>Décrivez votre projet :</strong></p><p>Que voulez-vous acheter ? Qui est le vendeur ? Où en êtes-vous ?</p>', () => {
+                            showChatInput("Décrivez votre projet...");
+                        });
+                        break;
+
+                    case 8:
+                        // Description finale
+                        userData.description = message;
+                        document.getElementById('chatInputContainer').style.display = 'none';
+                        
+                        // Récapitulatif
+                        botType('<p><strong>RÉCAPITULATIF :</strong></p><p>• Secteur : ' + getSectorFullName(userData.sector) + '</p><p>• Budget : ' + userData.budget + '</p><p>• Délai : ' + userData.timeline + '</p><p>• Région : ' + userData.location + '</p><p>• Contact : ' + userData.name + ' (' + userData.phone + ')</p>', () => {
+                            
+                            setTimeout(async () => {
+                                // ENVOI EMAIL SÉCURISÉ
+                                const emailSent = await sendEmailNotificationSecure(userData);
+                                
+                                if (userData.isUrgent) {
+                                    botType('<p><strong>⚡ URGENCE CONFIRMÉE !</strong></p><p>Notre expert va vous appeler dans les 30 minutes.</p><p>Gardez votre téléphone à portée !</p>');
+                                } else {
+                                    botType('<p><strong>✅ DEMANDE ENREGISTRÉE</strong></p><p>À bientôt ' + userData.name.split(' ')[0].toUpperCase() + ' !</p>');
+                                }
+                            }, 1500);
+                        });
+                        
+                        console.log('📊 Données collectées:', userData);
+                        break;
                 }
-            ]);
+            } catch (error) {
+                console.error('Erreur processUserInput:', error);
+                botType('<p><strong>Une erreur est survenue.</strong></p><p>Veuillez réessayer ou nous appeler au 06 37 46 95 32</p>');
+            }
         }
 
         function resetBot() {
@@ -2226,56 +2296,7 @@
             });
         }
 
-        // FONCTION D'ENVOI EMAIL via EmailJS - CORRIGÉE
-        function sendEmailNotification(data) {
-            // Configuration EmailJS avec VOS VRAIS CODES
-            emailjs.init('OI1jMnZD1wrIqrDrG')
-            
-            const templateParams = {
-                to_email: 'directionleveo@gmail.com', // Votre email
-                from_name: data.name,
-                secteur: getSectorFullName(data.sector),
-                budget: data.budget,
-                delai: data.timeline,
-                region: data.location,
-                nom_complet: data.name,
-                telephone: data.phone,
-                email_client: data.email,
-                description_projet: data.description,
-                urgence: data.isUrgent ? '🚨 DEMANDE URGENTE - Rappel sous 30min' : 'Demande normale',
-                date_demande: new Date().toLocaleString('fr-FR'),
-                subject: `${data.isUrgent ? '🚨 URGENCE' : '📝 Nouvelle demande'} You² Cabinet - ${getSectorFullName(data.sector)} - ${data.budget}`
-            };
-
-            emailjs.send('service_j1fujkb', 'template_tvev2lc', templateParams)
-                .then(function(response) {
-                    console.log('✅ Email envoyé avec succès!', response.status, response.text);
-                    
-                    // Notification de confirmation dans le bot
-                    setTimeout(() => {
-                        botType('<p><strong>✅ Demande transmise avec succès !</strong></p><p>Vous recevrez une confirmation par email.</p>');
-                    }, 3000);
-                    
-                }, function(error) {
-                    console.error('❌ Erreur lors de l\'envoi de l\'email:', error);
-                    
-                    // En cas d'erreur, afficher un message alternatif
-                    setTimeout(() => {
-                        botType('<p><strong>📞 Pour un traitement immédiat, appelez-nous :</strong></p><p><a href="tel:+33637469532" style="color: #D4AF37; font-weight: bold;">06 37 46 95 32</a></p>');
-                    }, 3000);
-                });
-        }
-
-        // Fonction utilitaire pour les noms complets des secteurs
-        function getSectorFullName(sector) {
-            const sectors = {
-                'automobile': 'Automobile (BMW, Mercedes, Audi, Porsche)',
-                'immobilier': 'Immobilier (Villas, appartements standing)',
-                'renovation': 'Rénovation (Cuisines, salles de bains)',
-                'moto': 'Moto (Harley, BMW, Ducati, Indian)'
-            };
-            return sectors[sector] || sector;
-        }
+        // ===== FONCTIONS GÉNÉRALES =====
 
         // Animation du compteur
         function animateCounter() {
@@ -2292,48 +2313,6 @@
                 counter.textContent = Math.floor(current).toLocaleString('fr-FR') + ' €';
             }, 20);
         }
-
-        // Démarrage de l'animation au chargement
-        window.addEventListener('load', () => {
-            // Retirer la classe preload-animations pour activer les animations
-            document.body.classList.remove('preload-animations');
-            // Démarrer l'animation du compteur
-            animateCounter();
-            // Initialiser le bot
-            updateProgress();
-            // Afficher les boutons de secteur dès le début
-            document.getElementById('quickReplies').style.display = 'grid';
-            document.getElementById('chatInputContainer').style.display = 'none';
-            
-            // Fermer le menu mobile en cliquant sur un lien
-            const navLinks = document.querySelectorAll('.nav-links a');
-            navLinks.forEach(link => {
-                link.addEventListener('click', function() {
-                    const navLinksContainer = document.getElementById('navLinks');
-                    const menuBtn = document.querySelector('.mobile-menu-btn');
-                    
-                    if (navLinksContainer && navLinksContainer.classList.contains('mobile-open')) {
-                        navLinksContainer.classList.remove('mobile-open');
-                        if (menuBtn) {
-                            menuBtn.classList.remove('active');
-                            menuBtn.setAttribute('aria-expanded', 'false');
-                        }
-                    }
-                });
-            });
-        });
-
-        // Gestion de l'entrée avec Entrée
-        document.addEventListener('DOMContentLoaded', function() {
-            const chatInput = document.getElementById('chatInput');
-            if (chatInput) {
-                chatInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        sendMessage();
-                    }
-                });
-            }
-        });
 
         // FAQ Widget functionality
         function toggleFaqWidget() {
@@ -2401,8 +2380,108 @@
             menuBtn.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
         }
 
-        // Scroll smooth pour les liens d'ancrage
-        document.addEventListener('DOMContentLoaded', function() {
+        // Analytics et tracking
+        function trackEvent(action, category, label) {
+            console.log('Event tracked:', action, category, label);
+            // Ici vous pouvez ajouter votre code Google Analytics
+            // gtag('event', action, { category: category, label: label });
+        }
+
+        // Cookie management
+        function setCookie(name, value, days) {
+            const expires = new Date();
+            expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+            document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
+        }
+
+        function getCookie(name) {
+            const nameEQ = name + "=";
+            const ca = document.cookie.split(';');
+            for(let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+        function acceptCookies() {
+            setCookie('cookieConsent', 'accepted', 365);
+            document.getElementById('cookieBanner').classList.remove('show');
+            console.log('Cookies acceptés');
+        }
+
+        function declineCookies() {
+            setCookie('cookieConsent', 'declined', 365);
+            document.getElementById('cookieBanner').classList.remove('show');
+            console.log('Cookies refusés');
+        }
+
+        // ===== FONCTIONS DE TEST =====
+        function testEmailSimple() {
+            if (!emailJSReady || typeof emailjs === 'undefined') {
+                console.error('❌ EmailJS non chargé ou non initialisé');
+                alert('❌ EmailJS non disponible');
+                return;
+            }
+            
+            console.log('🧪 Test EmailJS simple...');
+            
+            emailjs.send('service_j1fujkb', 'template_tvev2lc', {
+                to_email: 'directionleveo@gmail.com',
+                from_name: 'Test',
+                secteur: 'Test',
+                budget: '1000€',
+                subject: 'Test You² Cabinet'
+            }).then(response => {
+                console.log('✅ Test réussi!', response);
+                alert('✅ EmailJS fonctionne parfaitement !');
+            }).catch(error => {
+                console.error('❌ Test échoué:', error);
+                alert('❌ Erreur: ' + (error.text || error.message));
+            });
+        }
+
+        // ===== INITIALISATION AU CHARGEMENT =====
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('🔄 Initialisation de la page...');
+            
+            // Initialiser EmailJS
+            try {
+                await initializeEmailJS();
+                console.log('✅ EmailJS prêt');
+            } catch (error) {
+                console.warn('⚠️ EmailJS non disponible, mode fallback activé');
+            }
+
+            // Gestion de l'entrée avec Entrée
+            const chatInput = document.getElementById('chatInput');
+            if (chatInput) {
+                chatInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        sendMessage();
+                    }
+                });
+            }
+
+            // Fermer le menu mobile en cliquant sur un lien
+            const navLinks = document.querySelectorAll('.nav-links a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    const navLinksContainer = document.getElementById('navLinks');
+                    const menuBtn = document.querySelector('.mobile-menu-btn');
+                    
+                    if (navLinksContainer && navLinksContainer.classList.contains('mobile-open')) {
+                        navLinksContainer.classList.remove('mobile-open');
+                        if (menuBtn) {
+                            menuBtn.classList.remove('active');
+                            menuBtn.setAttribute('aria-expanded', 'false');
+                        }
+                    }
+                });
+            });
+
+            // Scroll smooth pour les liens d'ancrage
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
                     e.preventDefault();
@@ -2416,17 +2495,8 @@
                     }
                 });
             });
-        });
 
-        // Analytics et tracking
-        function trackEvent(action, category, label) {
-            console.log('Event tracked:', action, category, label);
-            // Ici vous pouvez ajouter votre code Google Analytics
-            // gtag('event', action, { category: category, label: label });
-        }
-
-        // Tracking des clics sur les CTA
-        document.addEventListener('DOMContentLoaded', function() {
+            // Tracking des clics sur les CTA
             document.querySelectorAll('.cta-primary').forEach(button => {
                 button.addEventListener('click', function() {
                     trackEvent('click', 'CTA', this.textContent);
@@ -2446,26 +2516,8 @@
                     trackEvent('click', 'email', this.href);
                 });
             });
-        });
 
-        // Cookie management
-        function acceptCookies() {
-            document.getElementById('cookieBanner').classList.remove('show');
-            console.log('Cookies acceptés');
-        }
-
-        function declineCookies() {
-            document.getElementById('cookieBanner').classList.remove('show');
-            console.log('Cookies refusés');
-        }
-
-        // Show cookie banner if not decided
-        setTimeout(() => {
-            document.getElementById('cookieBanner').classList.add('show');
-        }, 2000);
-
-        // Fermer les widgets en cliquant à l'extérieur
-        document.addEventListener('DOMContentLoaded', function() {
+            // Fermer les widgets en cliquant à l'extérieur
             document.addEventListener('click', function(e) {
                 const faqWidget = document.getElementById('faqWidget');
                 const contactWidget = document.querySelector('.contact-widget');
@@ -2476,8 +2528,137 @@
             });
         });
 
-        // Debug console
-        console.log('🏆 You² Cabinet Bot - Version Complète et Corrigée');
+        // Démarrage de l'animation au chargement
+        window.addEventListener('load', () => {
+            // Retirer la classe preload-animations pour activer les animations
+            document.body.classList.remove('preload-animations');
+            
+            // Démarrer l'animation du compteur
+            animateCounter();
+            
+            // Initialiser le bot
+            updateProgress();
+            
+            // Afficher les boutons de secteur dès le début
+            document.getElementById('quickReplies').style.display = 'grid';
+            document.getElementById('chatInputContainer').style.display = 'none';
+
+            // Vérifier le consentement cookies existant
+            const consent = getCookie('cookieConsent');
+            if (!consent) {
+                // Afficher la bannière seulement si pas de consentement
+                setTimeout(() => {
+                    document.getElementById('cookieBanner').classList.add('show');
+                }, 2000);
+            }
+        });
+
+        // ===== EXPORTS POUR CONSOLE (DEBUG) =====
+        window.testEmail = testEmailSimple;
+        window.resetBot = resetBot;
+        window.emailJSStatus = () => emailJSReady;
+        window.debugBot = {
+            userData: () => userData,
+            currentStep: () => currentStep,
+            testEmail: testEmailSimple,
+            resetBot: resetBot
+        };
+
+        console.log('🏆 You² Cabinet - Version Corrigée et Sécurisée');
+        console.log('🔧 Commands disponibles: testEmail(), resetBot(), debugBot.userData()');
     </script>
 </body>
-</html>
+</html> D'ENVOI EMAIL CORRIGÉES =====
+        
+        // Fonction principale d'envoi email avec fallback automatique
+        async function sendEmailNotificationSecure(data) {
+            console.log('🚀 Début envoi email...', data);
+            
+            try {
+                // Essayer EmailJS d'abord
+                if (emailJSReady && typeof emailjs !== 'undefined') {
+                    console.log('📧 Tentative avec EmailJS...');
+                    
+                    const templateParams = {
+                        to_email: 'directionleveo@gmail.com',
+                        from_name: data.name || 'Client You²',
+                        secteur: getSectorFullName(data.sector) || 'Non précisé',
+                        budget: data.budget || 'Non précisé',
+                        delai: data.timeline || 'Non précisé',
+                        region: data.location || 'Non précisé',
+                        nom_complet: data.name || 'Non précisé',
+                        telephone: data.phone || 'Non précisé',
+                        email_client: data.email || 'Non précisé',
+                        description_projet: data.description || 'Non précisé',
+                        urgence: data.isUrgent ? 'DEMANDE URGENTE - Rappel sous 30min' : 'Demande normale',
+                        date_demande: new Date().toLocaleString('fr-FR'),
+                        subject: `Nouvelle demande You² Cabinet - ${getSectorFullName(data.sector)} - ${data.budget}`
+                    };
+                    
+                    console.log('📋 Paramètres template:', templateParams);
+                    
+                    const response = await emailjs.send(
+                        'service_j1fujkb',
+                        'template_tvev2lc',
+                        templateParams
+                    );
+                    
+                    console.log('✅ Email envoyé avec succès via EmailJS!', response);
+                    
+                    // Message de succès
+                    setTimeout(() => {
+                        botType('<p><strong>✅ Demande transmise avec succès !</strong></p><p>Notre expert va vous recontacter rapidement.</p><p>Vous recevrez une confirmation par email sous quelques minutes.</p>');
+                    }, 1000);
+                    
+                    return true;
+                    
+                } else {
+                    throw new Error('EmailJS non disponible');
+                }
+                
+            } catch (error) {
+                console.warn('⚠️ EmailJS échoué, passage au fallback mailto:', error);
+                
+                // FALLBACK AUTOMATIQUE : mailto
+                const subject = encodeURIComponent(`Demande You² Cabinet - ${getSectorFullName(data.sector)}`);
+                const body = encodeURIComponent(`
+NOUVELLE DEMANDE YOU² CABINET
+
+Secteur: ${getSectorFullName(data.sector)}
+Budget: ${data.budget}
+Délai: ${data.timeline}
+Région: ${data.location}
+Nom: ${data.name}
+Téléphone: ${data.phone}
+Email: ${data.email}
+Description: ${data.description}
+Urgence: ${data.isUrgent ? 'OUI - Rappel sous 30min' : 'NON'}
+Date: ${new Date().toLocaleString('fr-FR')}
+                `);
+                
+                const mailtoLink = `mailto:directionleveo@gmail.com?subject=${subject}&body=${body}`;
+                
+                console.log('📧 Ouverture mailto fallback');
+                window.open(mailtoLink, '_blank');
+                
+                // Message dans le bot
+                setTimeout(() => {
+                    botType('<p><strong>📧 Email préparé !</strong></p><p>Votre client email va s\'ouvrir automatiquement avec votre demande pré-remplie.</p><p>Si ça ne fonctionne pas, appelez-nous directement :</p><p><a href="tel:+33637469532" style="color: #D4AF37; font-weight: bold;">06 37 46 95 32</a></p>');
+                }, 1000);
+                
+                return false;
+            }
+        }
+
+        // Fonction utilitaire pour les noms complets des secteurs
+        function getSectorFullName(sector) {
+            const sectors = {
+                'automobile': 'Automobile (BMW, Mercedes, Audi, Porsche)',
+                'immobilier': 'Immobilier (Villas, appartements standing)',
+                'renovation': 'Rénovation (Cuisines, salles de bains)',
+                'moto': 'Moto (Harley, BMW, Ducati, Indian)'
+            };
+            return sectors[sector] || sector;
+        }
+
+        // ===== FONCTIONS
