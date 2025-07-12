@@ -1,576 +1,4 @@
-<script>
-        // Bot Contact Variables
-        let currentStep = 1;
-        let userData = {};
-        let isTyping = false;
-
-        const steps = {
-            1: { title: 'Secteur d\'intervention', progress: 12 },
-            2: { title: 'Budget prévu', progress: 25 },
-            3: { title: 'Délai avant signature', progress: 37 },
-            4: { title: 'Localisation', progress: 50 },
-            5: { title: 'Nom complet', progress: 62 },
-            6: { title: 'Numéro de téléphone', progress: 75 },
-            7: { title: 'Adresse email', progress: 87 },
-            8: { title: 'Description du projet', progress: 100 }
-        };
-
-        function updateProgress() {
-            const indicator = document.getElementById('stepIndicator');
-            const progressFill = document.getElementById('progressFill');
-            
-            indicator.textContent = `Étape ${currentStep}/8 - ${steps[currentStep].title}`;
-            progressFill.style.width = `${steps[currentStep].progress}%`;
-        }
-
-        function scrollToBottom() {
-            const chatMessages = document.getElementById('chatMessages');
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        function showTyping() {
-            if (isTyping) return;
-            isTyping = true;
-            document.getElementById('typingIndicator').style.display = 'block';
-            scrollToBottom();
-        }
-
-        function hideTyping() {
-            isTyping = false;
-            document.getElementById('typingIndicator').style.display = 'none';
-        }
-
-        function addMessage(content, isUser = false) {
-            const chatMessages = document.getElementById('chatMessages');
-            const typingIndicator = document.getElementById('typingIndicator');
-            
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
-            
-            messageDiv.innerHTML = `
-                <div class="message-avatar">${isUser ? 'V' : 'Y²'}</div>
-                <div class="message-content">
-                    ${content}
-                </div>
-            `;
-            
-            chatMessages.insertBefore(messageDiv, typingIndicator);
-            scrollToBottom();
-        }
-
-        function botType(message, callback = null) {
-            showTyping();
-            setTimeout(() => {
-                hideTyping();
-                addMessage(message);
-                if (callback) callback();
-            }, 1500 + Math.random() * 1000);
-        }
-
-        function showQuickReplies(replies) {
-            const quickReplies = document.getElementById('quickReplies');
-            quickReplies.innerHTML = '';
-            
-            replies.forEach(reply => {
-                const button = document.createElement('div');
-                button.className = 'quick-reply';
-                button.innerHTML = reply.html;
-                button.onclick = reply.action;
-                quickReplies.appendChild(button);
-            });
-            
-            quickReplies.style.display = 'flex';
-            document.getElementById('chatInputContainer').style.display = 'none';
-        }
-
-        function showChatInput(placeholder = "Tapez votre réponse...") {
-            document.getElementById('quickReplies').style.display = 'none';
-            document.getElementById('chatInputContainer').style.display = 'block';
-            const input = document.getElementById('chatInput');
-            input.placeholder = placeholder;
-            input.focus();
-        }
-
-        // Style spécial pour les boutons initiaux (secteurs)
-        function showInitialSectors() {
-            const quickReplies = document.getElementById('quickReplies');
-            quickReplies.style.display = 'grid';
-            quickReplies.style.gridTemplateColumns = '1fr 1fr';
-            quickReplies.style.gridTemplateRows = '1fr 1fr';
-            quickReplies.style.gap = '1rem 1rem';
-            quickReplies.style.justifyItems = 'center';
-            quickReplies.style.alignItems = 'center';
-            quickReplies.style.flexDirection = 'initial';
-            quickReplies.style.padding = '2rem';
-        }
-
-        function selectSector(sector) {
-            const sectorNames = {
-                'automobile': 'Automobile (BMW, Mercedes, Audi, Porsche)',
-                'immobilier': 'Immobilier (Villas, appartements)',
-                'renovation': 'Rénovation (Cuisines, salles de bains)',
-                'moto': 'Moto (Harley, BMW, Ducati, Indian)'
-            };
-            
-            userData.sector = sector;
-            addMessage(`<p><strong>${sectorNames[sector]}</strong></p>`, true);
-            
-            currentStep = 2;
-            updateProgress();
-            
-            botType('<p><strong>Excellent choix !</strong> Notre expertise dans ce secteur nous permet d\'identifier rapidement les marges de négociation.</p><p><strong>Quel est votre budget prévu exact ?</strong></p><p>Indiquez le montant précis pour que notre expert puisse adapter sa stratégie de négociation.</p>', () => {
-                showChatInput("Ex: 25000, 45000, 350000...");
-            });
-        }
-
-        function sendMessage() {
-            const input = document.getElementById('chatInput');
-            const message = input.value.trim();
-            
-            if (!message) return;
-            
-            addMessage(`<p><strong>${message}</strong></p>`, true);
-            input.value = '';
-            
-            processUserInput(message);
-        }
-
-        function processUserInput(message) {
-            switch(currentStep) {
-                case 1:
-                    // Secteur (début du bot)
-                    let sector = '';
-                    let sectorName = '';
-                    
-                    if (message === '1' || message.toLowerCase().includes('automobile') || message.toLowerCase().includes('auto')) {
-                        sector = 'automobile';
-                        sectorName = 'Automobile (BMW, Mercedes, Audi, Porsche)';
-                    } else if (message === '2' || message.toLowerCase().includes('immobilier') || message.toLowerCase().includes('maison') || message.toLowerCase().includes('appartement')) {
-                        sector = 'immobilier';
-                        sectorName = 'Immobilier (Villas, appartements)';
-                    } else if (message === '3' || message.toLowerCase().includes('renovation') || message.toLowerCase().includes('cuisine') || message.toLowerCase().includes('travaux')) {
-                        sector = 'renovation';
-                        sectorName = 'Rénovation (Cuisines, salles de bains)';
-                    } else if (message === '4' || message.toLowerCase().includes('moto') || message.toLowerCase().includes('harley') || message.toLowerCase().includes('ducati')) {
-                        sector = 'moto';
-                        sectorName = 'Moto (Harley, BMW, Ducati, Indian)';
-                    } else {
-                        botType('<p><strong>Choix non reconnu.</strong></p><p>Tapez <strong>1</strong> pour Automobile, <strong>2</strong> pour Immobilier, <strong>3</strong> pour Rénovation ou <strong>4</strong> pour Moto.</p>', () => {
-                            showChatInput("Tapez 1, 2, 3 ou 4...");
-                        });
-                        return;
-                    }
-                    
-                    userData.sector = sector;
-                    currentStep = 2;
-                    updateProgress();
-                    
-                    botType('<p><strong>Excellent choix !</strong> Secteur sélectionné : ' + sectorName + '</p><p><strong>Quel est votre budget prévu exact ?</strong></p><p>Indiquez le montant précis pour que notre expert puisse adapter sa stratégie de négociation.</p>', () => {
-                        showChatInput("Ex: 25000, 45000, 350000...");
-                    });
-                    break;
-
-                case 2:
-                    // Budget
-                    const budgetText = message.replace(/[^\d]/g, '');
-                    const budgetNumber = parseInt(budgetText);
-                    
-                    if (!budgetText || budgetText.length === 0 || isNaN(budgetNumber) || budgetNumber < 100) {
-                        botType('<p><strong>Le budget semble incorrect.</strong></p><p>Pouvez-vous indiquer le montant en euros ?</p>', () => {
-                            showChatInput("Ex: 25000, 45000, 350000...");
-                        });
-                        return;
-                    }
-                    
-                    userData.budget = budgetNumber.toLocaleString('fr-FR') + '€';
-                    currentStep = 3;
-                    updateProgress();
-                    
-                    botType('<p><strong>Parfait !</strong> Budget noté : ' + userData.budget + '</p><p><strong>Dans combien de temps prévoyez-vous de signer ?</strong></p>', () => {
-                        showChatInput("Ex: 24h, 2 jours, cette semaine...");
-                    });
-                    break;
-
-                case 3:
-                    // Délai
-                    userData.timeline = message;
-                    
-                    if (message.toLowerCase().includes('24h') || message.toLowerCase().includes('demain') || message.toLowerCase().includes('urgent')) {
-                        userData.isUrgent = true;
-                    }
-                    
-                    currentStep = 4;
-                    updateProgress();
-                    
-                    let urgencyMsg = userData.isUrgent ? '<p><strong style="color: #D4AF37;">URGENCE DÉTECTÉE !</strong></p>' : '';
-                    
-                    botType(urgencyMsg + '<p><strong>Dans quelle région vous trouvez-vous ?</strong></p>', () => {
-                        showChatInput("Ex: Paris, Lyon, Marseille...");
-                    });
-                    break;
-
-                case 4:
-                    // Localisation
-                    userData.location = message;
-                    currentStep = 5;
-                    updateProgress();
-                    
-                    botType('<p><strong>Quel est votre nom complet ?</strong></p>', () => {
-                        showChatInput("Ex: Jean Dupont");
-                    });
-                    break;
-
-                case 5:
-                    // Nom
-                    userData.name = message;
-                    currentStep = 6;
-                    updateProgress();
-                    
-                    botType('<p><strong>Quel est votre numéro de téléphone ?</strong></p>', () => {
-                        showChatInput("Ex: 06 12 34 56 78");
-                    });
-                    break;
-
-                case 6:
-                    // Téléphone
-                    if (!/^(?:\+33|0)[1-9](?:[0-9]{8})$/.test(message.replace(/\s/g, ''))) {
-                        botType('<p><strong>Numéro incorrect.</strong></p><p>Format attendu : 06 12 34 56 78</p>', () => {
-                            showChatInput("Ex: 06 12 34 56 78");
-                        });
-                        return;
-                    }
-                    
-                    userData.phone = message;
-                    currentStep = 7;
-                    updateProgress();
-                    
-                    botType('<p><strong>Votre adresse email ?</strong></p>', () => {
-                        showChatInput("Ex: jean.dupont@email.com");
-                    });
-                    break;
-
-                case 7:
-                    // Email
-                    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(message)) {
-                        botType('<p><strong>Email incorrect.</strong></p><p>Vérifiez le format</p>', () => {
-                            showChatInput("Ex: jean.dupont@email.com");
-                        });
-                        return;
-                    }
-                    
-                    userData.email = message;
-                    currentStep = 8;
-                    updateProgress();
-                    
-                    botType('<p><strong>Décrivez votre projet :</strong></p><p>Que voulez-vous acheter ? Qui est le vendeur ? Où en êtes-vous ?</p>', () => {
-                        showChatInput("Décrivez votre projet...");
-                    });
-                    break;
-
-                case 8:
-                    // Description finale
-                    userData.description = message;
-                    document.getElementById('chatInputContainer').style.display = 'none';
-                    
-                    // Récapitulatif
-                    botType('<p><strong>RÉCAPITULATIF :</strong></p><p>• Secteur : ' + userData.sector + '</p><p>• Budget : ' + userData.budget + '</p><p>• Délai : ' + userData.timeline + '</p><p>• Région : ' + userData.location + '</p><p>• Contact : ' + userData.name + ' (' + userData.phone + ')</p>', () => {
-                        
-                        setTimeout(() => {
-                            // ENVOI DE L'EMAIL via EmailJS
-                            sendEmailNotification(userData);
-                            
-                            if (userData.isUrgent) {
-                                botType('<p><strong>⚡ URGENCE !</strong></p><p>Notre expert va vous appeler dans les 30 minutes.</p><p>Gardez votre téléphone à portée !</p>');
-                            } else {
-                                botType('<p><strong>À BIENTÔT ' + userData.name.split(' ')[0].toUpperCase() + ' !</strong></p><p>Notre expert va vous recontacter rapidement.</p>');
-                            }
-                        }, 1500);
-                    });
-                    
-                    console.log('Données collectées:', userData);
-                    break;
-            }
-        }
-
-        function showFinalOptions(isUrgent) {
-            showQuickReplies([
-                { 
-                    html: '<strong>NOUVELLE DEMANDE</strong>',
-                    action: () => {
-                        resetBot();
-                    }
-                }
-            ]);
-        }
-
-        function resetBot() {
-            addMessage('<p><strong>Nouveau projet</strong></p>', true);
-            userData = {};
-            currentStep = 1;
-            updateProgress();
-            
-            botType('<p><strong>Nouveau projet ?</strong></p><p><strong>Dans quel secteur cette fois ?</strong></p>', () => {
-                document.getElementById('quickReplies').style.display = 'grid';
-                document.getElementById('chatInputContainer').style.display = 'none';
-            });
-        }
-
-        // FONCTION D'ENVOI EMAIL via EmailJS
-        function sendEmailNotification(data) {
-            // Configuration EmailJS avec VOS VRAIS CODES
-            emailjs.init('Ol1JMnZD1wr1qrDrG'); // Votre Public Key
-            
-            const templateParams = {
-                to_email: 'directionleveo@gmail.com', // Votre email
-                from_name: data.name,
-                secteur: getSectorFullName(data.sector),
-                budget: data.budget,
-                delai: data.timeline,
-                region: data.location,
-                nom_complet: data.name,
-                telephone: data.phone,
-                email_client: data.email,
-                description_projet: data.description,
-                urgence: data.isUrgent ? '🚨 DEMANDE URGENTE - Rappel sous 30min' : 'Demande normale',
-                date_demande: new Date().toLocaleString('fr-FR'),
-                subject: `${data.isUrgent ? '🚨 URGENCE' : '📝 Nouvelle demande'} You² Cabinet - ${getSectorFullName(data.sector)} - ${data.budget}`
-            };
-
-            emailjs.send('service_j1fujkb', 'template_tvev2lc', templateParams)
-                .then(function(response) {
-                    console.log('✅ Email envoyé avec succès!', response.status, response.text);
-                    
-                    // Notification de confirmation dans le bot
-                    setTimeout(() => {
-                        botType('<p><strong>✅ Demande transmise avec succès !</strong></p><p>Vous recevrez une confirmation par email.</p>');
-                    }, 3000);
-                    
-                }, function(error) {
-                    console.error('❌ Erreur lors de l\'envoi de l\'email:', error);
-                    
-                    // En cas d'erreur, afficher un message alternatif
-                    setTimeout(() => {
-                        botType('<p><strong>📞 Pour un traitement immédiat, appelez-nous :</strong></p><p><a href="tel:+33637469532" style="color: #D4AF37; font-weight: bold;">06 37 46 95 32</a></p>');
-                    }, 3000);
-                });
-        }
-
-        // Fonction utilitaire pour les noms complets des secteurs
-        function getSectorFullName(sector) {
-            const sectors = {
-                'automobile': 'Automobile (BMW, Mercedes, Audi, Porsche)',
-                'immobilier': 'Immobilier (Villas, appartements standing)',
-                'renovation': 'Rénovation (Cuisines, salles de bains)',
-                'moto': 'Moto (Harley, BMW, Ducati, Indian)'
-            };
-            return sectors[sector] || sector;
-        }
-
-        // Animation du compteur
-        function animateCounter() {
-            const counter = document.getElementById('totalSavings');
-            const target = 847293;
-            let current = 0;
-            const increment = target / 150;
-            const timer = setInterval(() => {
-                current += increment;
-                if (current >= target) {
-                    current = target;
-                    clearInterval(timer);
-                }
-                counter.textContent = Math.floor(current).toLocaleString('fr-FR') + ' €';
-            }, 20);
-        }
-
-        // Démarrage de l'animation au chargement
-        window.addEventListener('load', () => {
-            // Retirer la classe preload-animations pour activer les animations
-            document.body.classList.remove('preload-animations');
-            // Démarrer l'animation du compteur
-            animateCounter();
-            // Initialiser le bot
-            updateProgress();
-            // Afficher les boutons de secteur dès le début
-            document.getElementById('quickReplies').style.display = 'grid';
-            document.getElementById('chatInputContainer').style.display = 'none';
-            
-            // Fermer le menu mobile en cliquant sur un lien
-            const navLinks = document.querySelectorAll('.nav-links a');
-            navLinks.forEach(link => {
-                link.addEventListener('click', function() {
-                    const navLinksContainer = document.getElementById('navLinks');
-                    const menuBtn = document.querySelector('.mobile-menu-btn');
-                    
-                    if (navLinksContainer && navLinksContainer.classList.contains('mobile-open')) {
-                        navLinksContainer.classList.remove('mobile-open');
-                        if (menuBtn) {
-                            menuBtn.classList.remove('active');
-                            menuBtn.setAttribute('aria-expanded', 'false');
-                        }
-                    }
-                });
-            });
-        });
-
-        // Gestion de l'entrée avec Entrée
-        document.addEventListener('DOMContentLoaded', function() {
-            const chatInput = document.getElementById('chatInput');
-            if (chatInput) {
-                chatInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        sendMessage();
-                    }
-                });
-            }
-        });
-
-        // FAQ Widget functionality
-        function toggleFaqWidget() {
-            const widget = document.getElementById('faqWidget');
-            if (widget.style.display === 'block') {
-                widget.classList.remove('show');
-                setTimeout(() => {
-                    widget.style.display = 'none';
-                }, 300);
-            } else {
-                widget.style.display = 'block';
-                setTimeout(() => {
-                    widget.classList.add('show');
-                }, 10);
-            }
-        }
-
-        function addBotConversation(question, answer) {
-            const messagesContainer = document.getElementById('chatMessages');
-            const typingIndicator = document.getElementById('typingIndicator');
-            
-            // Add user message
-            const userMessage = document.createElement('div');
-            userMessage.className = 'message user';
-            userMessage.innerHTML = `
-                <div class="message-content">
-                    ${question}
-                </div>
-            `;
-            messagesContainer.insertBefore(userMessage, typingIndicator);
-            
-            // Show typing indicator
-            typingIndicator.style.display = 'block';
-            
-            // Scroll to bottom
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            
-            // Simulate typing delay and show response
-            setTimeout(() => {
-                typingIndicator.style.display = 'none';
-                
-                const botMessage = document.createElement('div');
-                botMessage.className = 'message bot';
-                botMessage.innerHTML = `
-                    <div class="message-content">
-                        ${answer}
-                    </div>
-                `;
-                messagesContainer.insertBefore(botMessage, typingIndicator);
-                
-                // Scroll to bottom
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            }, 1500);
-        }
-
-        // Menu mobile
-        function toggleMobileMenu() {
-            const navLinks = document.getElementById('navLinks');
-            const menuBtn = document.querySelector('.mobile-menu-btn');
-            
-            navLinks.classList.toggle('mobile-open');
-            menuBtn.classList.toggle('active');
-            
-            const isExpanded = navLinks.classList.contains('mobile-open');
-            menuBtn.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
-        }
-
-        // Fermer le menu mobile en cliquant sur un lien
-        // (Déjà géré dans window.addEventListener('load'))
-
-        // Scroll smooth pour les liens d'ancrage
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const targetId = this.getAttribute('href');
-                    const target = document.querySelector(targetId);
-                    if (target) {
-                        target.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
-                    }
-                });
-            });
-        });
-
-        // Analytics et tracking
-        function trackEvent(action, category, label) {
-            console.log('Event tracked:', action, category, label);
-            // Ici vous pouvez ajouter votre code Google Analytics
-            // gtag('event', action, { category: category, label: label });
-        }
-
-        // Tracking des clics sur les CTA
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.cta-primary').forEach(button => {
-                button.addEventListener('click', function() {
-                    trackEvent('click', 'CTA', this.textContent);
-                });
-            });
-
-            // Tracking des appels téléphoniques
-            document.querySelectorAll('a[href^="tel:"]').forEach(link => {
-                link.addEventListener('click', function() {
-                    trackEvent('click', 'phone', this.href);
-                });
-            });
-
-            // Tracking des emails
-            document.querySelectorAll('a[href^="mailto:"]').forEach(link => {
-                link.addEventListener('click', function() {
-                    trackEvent('click', 'email', this.href);
-                });
-            });
-        });
-
-        // Cookie management
-        function acceptCookies() {
-            document.getElementById('cookieBanner').classList.remove('show');
-            console.log('Cookies acceptés');
-        }
-
-        function declineCookies() {
-            document.getElementById('cookieBanner').classList.remove('show');
-            console.log('Cookies refusés');
-        }
-
-        // Show cookie banner if not decided
-        setTimeout(() => {
-            document.getElementById('cookieBanner').classList.add('show');
-        }, 2000);
-
-        // Fermer les widgets en cliquant à l'extérieur
-        document.addEventListener('DOMContentLoaded', function() {
-            document.addEventListener('click', function(e) {
-                const faqWidget = document.getElementById('faqWidget');
-                const contactWidget = document.querySelector('.contact-widget');
-                
-                if (faqWidget && contactWidget && !contactWidget.contains(e.target)) {
-                    faqWidget.style.display = 'none';
-                }
-            });
-        });
-
-        // Debug console
-        console.log('🏆 You² Cabinet Bot - Version Complète');
-    </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -1669,7 +1097,7 @@
             font-size: 0.85rem;
         }
 
-        .chat-messages {
+        .faq-chat-messages {
             height: 200px;
             overflow-y: auto;
             padding: 1rem;
@@ -1677,25 +1105,25 @@
             scrollbar-color: rgba(212, 175, 55, 0.3) transparent;
         }
 
-        .chat-messages::-webkit-scrollbar {
+        .faq-chat-messages::-webkit-scrollbar {
             width: 6px;
         }
 
-        .chat-messages::-webkit-scrollbar-track {
+        .faq-chat-messages::-webkit-scrollbar-track {
             background: rgba(255, 255, 255, 0.05);
             border-radius: 3px;
         }
 
-        .chat-messages::-webkit-scrollbar-thumb {
+        .faq-chat-messages::-webkit-scrollbar-thumb {
             background: rgba(212, 175, 55, 0.4);
             border-radius: 3px;
         }
 
-        .chat-messages::-webkit-scrollbar-thumb:hover {
+        .faq-chat-messages::-webkit-scrollbar-thumb:hover {
             background: rgba(212, 175, 55, 0.6);
         }
 
-        .message {
+        .faq-message {
             margin-bottom: 1rem;
             display: flex;
             align-items: flex-start;
@@ -1708,11 +1136,11 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .message.user {
+        .faq-message.user {
             flex-direction: row-reverse;
         }
 
-        .message-content {
+        .faq-message-content {
             max-width: 85%;
             padding: 0.8rem 1.2rem;
             border-radius: 18px;
@@ -1721,13 +1149,13 @@
             word-wrap: break-word;
         }
 
-        .message.bot .message-content {
+        .faq-message.bot .faq-message-content {
             background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
             color: #ffffff;
             border: 1px solid rgba(212, 175, 55, 0.2);
         }
 
-        .message.user .message-content {
+        .faq-message.user .faq-message-content {
             background: linear-gradient(135deg, #D4AF37 0%, #ffd700 100%);
             color: #000000;
             font-weight: 500;
@@ -1794,7 +1222,7 @@
             box-shadow: 0 8px 20px rgba(212, 175, 55, 0.2);
         }
 
-        .typing-indicator {
+        .faq-typing-indicator {
             display: none;
             padding: 0.8rem 1.2rem;
             background: rgba(255, 255, 255, 0.05);
@@ -1803,13 +1231,13 @@
             border: 1px solid rgba(212, 175, 55, 0.2);
         }
 
-        .typing-dots {
+        .faq-typing-dots {
             display: flex;
             gap: 4px;
             justify-content: center;
         }
 
-        .typing-dots span {
+        .faq-typing-dots span {
             width: 8px;
             height: 8px;
             background: #D4AF37;
@@ -1817,11 +1245,11 @@
             animation: typing 1.5s ease-in-out infinite;
         }
 
-        .typing-dots span:nth-child(2) {
+        .faq-typing-dots span:nth-child(2) {
             animation-delay: 0.2s;
         }
 
-        .typing-dots span:nth-child(3) {
+        .faq-typing-dots span:nth-child(3) {
             animation-delay: 0.4s;
         }
 
@@ -2409,15 +1837,15 @@
                 <button onclick="toggleFaqWidget()" style="background: none; border: none; color: #ffffff; font-size: 1.5rem; margin-left: auto; cursor: pointer; padding: 0.5rem; font-weight: bold;">×</button>
             </div>
             
-            <div class="chat-messages" id="chatMessages">
-                <div class="message bot">
-                    <div class="message-content">
+            <div class="faq-chat-messages" id="faqChatMessages">
+                <div class="faq-message bot">
+                    <div class="faq-message-content">
                         Bonjour ! Je suis l'assistant You². Comment puis-je vous aider aujourd'hui ?
                     </div>
                 </div>
                 
-                <div class="typing-indicator" id="typingIndicator">
-                    <div class="typing-dots">
+                <div class="faq-typing-indicator" id="faqTypingIndicator">
+                    <div class="faq-typing-dots">
                         <span></span>
                         <span></span>
                         <span></span>
@@ -2495,6 +1923,360 @@
     </footer>
 
     <script>
+        // Bot Contact Variables
+        let currentStep = 1;
+        let userData = {};
+        let isTyping = false;
+
+        const steps = {
+            1: { title: 'Secteur d\'intervention', progress: 12 },
+            2: { title: 'Budget prévu', progress: 25 },
+            3: { title: 'Délai avant signature', progress: 37 },
+            4: { title: 'Localisation', progress: 50 },
+            5: { title: 'Nom complet', progress: 62 },
+            6: { title: 'Numéro de téléphone', progress: 75 },
+            7: { title: 'Adresse email', progress: 87 },
+            8: { title: 'Description du projet', progress: 100 }
+        };
+
+        function updateProgress() {
+            const indicator = document.getElementById('stepIndicator');
+            const progressFill = document.getElementById('progressFill');
+            
+            indicator.textContent = `Étape ${currentStep}/8 - ${steps[currentStep].title}`;
+            progressFill.style.width = `${steps[currentStep].progress}%`;
+        }
+
+        function scrollToBottom() {
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function showTyping() {
+            if (isTyping) return;
+            isTyping = true;
+            document.getElementById('typingIndicator').style.display = 'block';
+            scrollToBottom();
+        }
+
+        function hideTyping() {
+            isTyping = false;
+            document.getElementById('typingIndicator').style.display = 'none';
+        }
+
+        function addMessage(content, isUser = false) {
+            const chatMessages = document.getElementById('chatMessages');
+            const typingIndicator = document.getElementById('typingIndicator');
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+            
+            messageDiv.innerHTML = `
+                <div class="message-avatar">${isUser ? 'V' : 'Y²'}</div>
+                <div class="message-content">
+                    ${content}
+                </div>
+            `;
+            
+            chatMessages.insertBefore(messageDiv, typingIndicator);
+            scrollToBottom();
+        }
+
+        function botType(message, callback = null) {
+            showTyping();
+            setTimeout(() => {
+                hideTyping();
+                addMessage(message);
+                if (callback) callback();
+            }, 1500 + Math.random() * 1000);
+        }
+
+        function showQuickReplies(replies) {
+            const quickReplies = document.getElementById('quickReplies');
+            quickReplies.innerHTML = '';
+            
+            replies.forEach(reply => {
+                const button = document.createElement('div');
+                button.className = 'quick-reply';
+                button.innerHTML = reply.html;
+                button.onclick = reply.action;
+                quickReplies.appendChild(button);
+            });
+            
+            quickReplies.style.display = 'flex';
+            document.getElementById('chatInputContainer').style.display = 'none';
+        }
+
+        function showChatInput(placeholder = "Tapez votre réponse...") {
+            document.getElementById('quickReplies').style.display = 'none';
+            document.getElementById('chatInputContainer').style.display = 'block';
+            const input = document.getElementById('chatInput');
+            input.placeholder = placeholder;
+            input.focus();
+        }
+
+        function selectSector(sector) {
+            const sectorNames = {
+                'automobile': 'Automobile (BMW, Mercedes, Audi, Porsche)',
+                'immobilier': 'Immobilier (Villas, appartements)',
+                'renovation': 'Rénovation (Cuisines, salles de bains)',
+                'moto': 'Moto (Harley, BMW, Ducati, Indian)'
+            };
+            
+            userData.sector = sector;
+            addMessage(`<p><strong>${sectorNames[sector]}</strong></p>`, true);
+            
+            currentStep = 2;
+            updateProgress();
+            
+            botType('<p><strong>Excellent choix !</strong> Notre expertise dans ce secteur nous permet d\'identifier rapidement les marges de négociation.</p><p><strong>Quel est votre budget prévu exact ?</strong></p><p>Indiquez le montant précis pour que notre expert puisse adapter sa stratégie de négociation.</p>', () => {
+                showChatInput("Ex: 25000, 45000, 350000...");
+            });
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            addMessage(`<p><strong>${message}</strong></p>`, true);
+            input.value = '';
+            
+            processUserInput(message);
+        }
+
+        function processUserInput(message) {
+            switch(currentStep) {
+                case 1:
+                    // Secteur (début du bot)
+                    let sector = '';
+                    let sectorName = '';
+                    
+                    if (message === '1' || message.toLowerCase().includes('automobile') || message.toLowerCase().includes('auto')) {
+                        sector = 'automobile';
+                        sectorName = 'Automobile (BMW, Mercedes, Audi, Porsche)';
+                    } else if (message === '2' || message.toLowerCase().includes('immobilier') || message.toLowerCase().includes('maison') || message.toLowerCase().includes('appartement')) {
+                        sector = 'immobilier';
+                        sectorName = 'Immobilier (Villas, appartements)';
+                    } else if (message === '3' || message.toLowerCase().includes('renovation') || message.toLowerCase().includes('cuisine') || message.toLowerCase().includes('travaux')) {
+                        sector = 'renovation';
+                        sectorName = 'Rénovation (Cuisines, salles de bains)';
+                    } else if (message === '4' || message.toLowerCase().includes('moto') || message.toLowerCase().includes('harley') || message.toLowerCase().includes('ducati')) {
+                        sector = 'moto';
+                        sectorName = 'Moto (Harley, BMW, Ducati, Indian)';
+                    } else {
+                        botType('<p><strong>Choix non reconnu.</strong></p><p>Tapez <strong>1</strong> pour Automobile, <strong>2</strong> pour Immobilier, <strong>3</strong> pour Rénovation ou <strong>4</strong> pour Moto.</p>', () => {
+                            showChatInput("Tapez 1, 2, 3 ou 4...");
+                        });
+                        return;
+                    }
+                    
+                    userData.sector = sector;
+                    currentStep = 2;
+                    updateProgress();
+                    
+                    botType('<p><strong>Excellent choix !</strong> Secteur sélectionné : ' + sectorName + '</p><p><strong>Quel est votre budget prévu exact ?</strong></p><p>Indiquez le montant précis pour que notre expert puisse adapter sa stratégie de négociation.</p>', () => {
+                        showChatInput("Ex: 25000, 45000, 350000...");
+                    });
+                    break;
+
+                case 2:
+                    // Budget
+                    const budgetText = message.replace(/[^\d]/g, '');
+                    const budgetNumber = parseInt(budgetText);
+                    
+                    if (!budgetText || budgetText.length === 0 || isNaN(budgetNumber) || budgetNumber < 100) {
+                        botType('<p><strong>Le budget semble incorrect.</strong></p><p>Pouvez-vous indiquer le montant en euros ?</p>', () => {
+                            showChatInput("Ex: 25000, 45000, 350000...");
+                        });
+                        return;
+                    }
+                    
+                    userData.budget = budgetNumber.toLocaleString('fr-FR') + '€';
+                    currentStep = 3;
+                    updateProgress();
+                    
+                    botType('<p><strong>Parfait !</strong> Budget noté : ' + userData.budget + '</p><p><strong>Dans combien de temps prévoyez-vous de signer ?</strong></p>', () => {
+                        showChatInput("Ex: 24h, 2 jours, cette semaine...");
+                    });
+                    break;
+
+                case 3:
+                    // Délai
+                    userData.timeline = message;
+                    
+                    if (message.toLowerCase().includes('24h') || message.toLowerCase().includes('demain') || message.toLowerCase().includes('urgent')) {
+                        userData.isUrgent = true;
+                    }
+                    
+                    currentStep = 4;
+                    updateProgress();
+                    
+                    let urgencyMsg = userData.isUrgent ? '<p><strong style="color: #D4AF37;">URGENCE DÉTECTÉE !</strong></p>' : '';
+                    
+                    botType(urgencyMsg + '<p><strong>Dans quelle région vous trouvez-vous ?</strong></p>', () => {
+                        showChatInput("Ex: Paris, Lyon, Marseille...");
+                    });
+                    break;
+
+                case 4:
+                    // Localisation
+                    userData.location = message;
+                    currentStep = 5;
+                    updateProgress();
+                    
+                    botType('<p><strong>Quel est votre nom complet ?</strong></p>', () => {
+                        showChatInput("Ex: Jean Dupont");
+                    });
+                    break;
+
+                case 5:
+                    // Nom
+                    userData.name = message;
+                    currentStep = 6;
+                    updateProgress();
+                    
+                    botType('<p><strong>Quel est votre numéro de téléphone ?</strong></p>', () => {
+                        showChatInput("Ex: 06 12 34 56 78");
+                    });
+                    break;
+
+                case 6:
+                    // Téléphone
+                    if (!/^(?:\+33|0)[1-9](?:[0-9]{8})$/.test(message.replace(/\s/g, ''))) {
+                        botType('<p><strong>Numéro incorrect.</strong></p><p>Format attendu : 06 12 34 56 78</p>', () => {
+                            showChatInput("Ex: 06 12 34 56 78");
+                        });
+                        return;
+                    }
+                    
+                    userData.phone = message;
+                    currentStep = 7;
+                    updateProgress();
+                    
+                    botType('<p><strong>Votre adresse email ?</strong></p>', () => {
+                        showChatInput("Ex: jean.dupont@email.com");
+                    });
+                    break;
+
+                case 7:
+                    // Email
+                    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(message)) {
+                        botType('<p><strong>Email incorrect.</strong></p><p>Vérifiez le format</p>', () => {
+                            showChatInput("Ex: jean.dupont@email.com");
+                        });
+                        return;
+                    }
+                    
+                    userData.email = message;
+                    currentStep = 8;
+                    updateProgress();
+                    
+                    botType('<p><strong>Décrivez votre projet :</strong></p><p>Que voulez-vous acheter ? Qui est le vendeur ? Où en êtes-vous ?</p>', () => {
+                        showChatInput("Décrivez votre projet...");
+                    });
+                    break;
+
+                case 8:
+                    // Description finale
+                    userData.description = message;
+                    document.getElementById('chatInputContainer').style.display = 'none';
+                    
+                    // Récapitulatif
+                    botType('<p><strong>RÉCAPITULATIF :</strong></p><p>• Secteur : ' + userData.sector + '</p><p>• Budget : ' + userData.budget + '</p><p>• Délai : ' + userData.timeline + '</p><p>• Région : ' + userData.location + '</p><p>• Contact : ' + userData.name + ' (' + userData.phone + ')</p>', () => {
+                        
+                        setTimeout(() => {
+                            // ENVOI DE L'EMAIL via EmailJS
+                            sendEmailNotification(userData);
+                            
+                            if (userData.isUrgent) {
+                                botType('<p><strong>⚡ URGENCE !</strong></p><p>Notre expert va vous appeler dans les 30 minutes.</p><p>Gardez votre téléphone à portée !</p>');
+                            } else {
+                                botType('<p><strong>À BIENTÔT ' + userData.name.split(' ')[0].toUpperCase() + ' !</strong></p><p>Notre expert va vous recontacter rapidement.</p>');
+                            }
+                        }, 1500);
+                    });
+                    
+                    console.log('Données collectées:', userData);
+                    break;
+            }
+        }
+
+        function showFinalOptions(isUrgent) {
+            showQuickReplies([
+                { 
+                    html: '<strong>NOUVELLE DEMANDE</strong>',
+                    action: () => {
+                        resetBot();
+                    }
+                }
+            ]);
+        }
+
+        function resetBot() {
+            addMessage('<p><strong>Nouveau projet</strong></p>', true);
+            userData = {};
+            currentStep = 1;
+            updateProgress();
+            
+            botType('<p><strong>Nouveau projet ?</strong></p><p><strong>Dans quel secteur cette fois ?</strong></p>', () => {
+                document.getElementById('quickReplies').style.display = 'grid';
+                document.getElementById('chatInputContainer').style.display = 'none';
+            });
+        }
+
+        // FONCTION D'ENVOI EMAIL via EmailJS - CORRIGÉE
+        function sendEmailNotification(data) {
+            // Configuration EmailJS avec VOS VRAIS CODES
+            emailjs.init('Ol1JMnZD1wr1qrDrG'); // Votre Public Key
+            
+            const templateParams = {
+                to_email: 'directionleveo@gmail.com', // Votre email
+                from_name: data.name,
+                secteur: getSectorFullName(data.sector),
+                budget: data.budget,
+                delai: data.timeline,
+                region: data.location,
+                nom_complet: data.name,
+                telephone: data.phone,
+                email_client: data.email,
+                description_projet: data.description,
+                urgence: data.isUrgent ? '🚨 DEMANDE URGENTE - Rappel sous 30min' : 'Demande normale',
+                date_demande: new Date().toLocaleString('fr-FR'),
+                subject: `${data.isUrgent ? '🚨 URGENCE' : '📝 Nouvelle demande'} You² Cabinet - ${getSectorFullName(data.sector)} - ${data.budget}`
+            };
+
+            emailjs.send('service_j1fujkb', 'template_tvev2lc', templateParams)
+                .then(function(response) {
+                    console.log('✅ Email envoyé avec succès!', response.status, response.text);
+                    
+                    // Notification de confirmation dans le bot
+                    setTimeout(() => {
+                        botType('<p><strong>✅ Demande transmise avec succès !</strong></p><p>Vous recevrez une confirmation par email.</p>');
+                    }, 3000);
+                    
+                }, function(error) {
+                    console.error('❌ Erreur lors de l\'envoi de l\'email:', error);
+                    
+                    // En cas d'erreur, afficher un message alternatif
+                    setTimeout(() => {
+                        botType('<p><strong>📞 Pour un traitement immédiat, appelez-nous :</strong></p><p><a href="tel:+33637469532" style="color: #D4AF37; font-weight: bold;">06 37 46 95 32</a></p>');
+                    }, 3000);
+                });
+        }
+
+        // Fonction utilitaire pour les noms complets des secteurs
+        function getSectorFullName(sector) {
+            const sectors = {
+                'automobile': 'Automobile (BMW, Mercedes, Audi, Porsche)',
+                'immobilier': 'Immobilier (Villas, appartements standing)',
+                'renovation': 'Rénovation (Cuisines, salles de bains)',
+                'moto': 'Moto (Harley, BMW, Ducati, Indian)'
+            };
+            return sectors[sector] || sector;
+        }
+
         // Animation du compteur
         function animateCounter() {
             const counter = document.getElementById('totalSavings');
@@ -2517,21 +2299,39 @@
             document.body.classList.remove('preload-animations');
             // Démarrer l'animation du compteur
             animateCounter();
+            // Initialiser le bot
+            updateProgress();
+            // Afficher les boutons de secteur dès le début
+            document.getElementById('quickReplies').style.display = 'grid';
+            document.getElementById('chatInputContainer').style.display = 'none';
+            
+            // Fermer le menu mobile en cliquant sur un lien
+            const navLinks = document.querySelectorAll('.nav-links a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    const navLinksContainer = document.getElementById('navLinks');
+                    const menuBtn = document.querySelector('.mobile-menu-btn');
+                    
+                    if (navLinksContainer && navLinksContainer.classList.contains('mobile-open')) {
+                        navLinksContainer.classList.remove('mobile-open');
+                        if (menuBtn) {
+                            menuBtn.classList.remove('active');
+                            menuBtn.setAttribute('aria-expanded', 'false');
+                        }
+                    }
+                });
+            });
         });
 
-        // Gestion du formulaire de contact
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            const data = Object.fromEntries(formData);
-            
-            alert('Merci ! Votre demande a été envoyée. Nous vous recontactons sous 2h maximum.');
-            
-            if (data.timeline === '24h') {
-                if (confirm('Situation d\'urgence détectée ! Souhaitez-vous nous appeler immédiatement ?')) {
-                    window.location.href = 'tel:+33637469532';
-                }
+        // Gestion de l'entrée avec Entrée
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatInput = document.getElementById('chatInput');
+            if (chatInput) {
+                chatInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        sendMessage();
+                    }
+                });
             }
         });
 
@@ -2552,14 +2352,14 @@
         }
 
         function addBotConversation(question, answer) {
-            const messagesContainer = document.getElementById('chatMessages');
-            const typingIndicator = document.getElementById('typingIndicator');
+            const messagesContainer = document.getElementById('faqChatMessages');
+            const typingIndicator = document.getElementById('faqTypingIndicator');
             
             // Add user message
             const userMessage = document.createElement('div');
-            userMessage.className = 'message user';
+            userMessage.className = 'faq-message user';
             userMessage.innerHTML = `
-                <div class="message-content">
+                <div class="faq-message-content">
                     ${question}
                 </div>
             `;
@@ -2576,9 +2376,9 @@
                 typingIndicator.style.display = 'none';
                 
                 const botMessage = document.createElement('div');
-                botMessage.className = 'message bot';
+                botMessage.className = 'faq-message bot';
                 botMessage.innerHTML = `
-                    <div class="message-content">
+                    <div class="faq-message-content">
                         ${answer}
                     </div>
                 `;
@@ -2601,34 +2401,20 @@
             menuBtn.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
         }
 
-        // Fermer le menu mobile en cliquant sur un lien
+        // Scroll smooth pour les liens d'ancrage
         document.addEventListener('DOMContentLoaded', function() {
-            const navLinks = document.querySelectorAll('.nav-links a');
-            navLinks.forEach(link => {
-                link.addEventListener('click', function() {
-                    const navLinksContainer = document.getElementById('navLinks');
-                    const menuBtn = document.querySelector('.mobile-menu-btn');
-                    
-                    if (navLinksContainer.classList.contains('mobile-open')) {
-                        navLinksContainer.classList.remove('mobile-open');
-                        menuBtn.classList.remove('active');
-                        menuBtn.setAttribute('aria-expanded', 'false');
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const target = document.querySelector(targetId);
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
                     }
                 });
-            });
-        });
-
-        // Scroll smooth pour les liens d'ancrage
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
             });
         });
 
@@ -2640,23 +2426,25 @@
         }
 
         // Tracking des clics sur les CTA
-        document.querySelectorAll('.cta-primary').forEach(button => {
-            button.addEventListener('click', function() {
-                trackEvent('click', 'CTA', this.textContent);
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.cta-primary').forEach(button => {
+                button.addEventListener('click', function() {
+                    trackEvent('click', 'CTA', this.textContent);
+                });
             });
-        });
 
-        // Tracking des appels téléphoniques
-        document.querySelectorAll('a[href^="tel:"]').forEach(link => {
-            link.addEventListener('click', function() {
-                trackEvent('click', 'phone', this.href);
+            // Tracking des appels téléphoniques
+            document.querySelectorAll('a[href^="tel:"]').forEach(link => {
+                link.addEventListener('click', function() {
+                    trackEvent('click', 'phone', this.href);
+                });
             });
-        });
 
-        // Tracking des emails
-        document.querySelectorAll('a[href^="mailto:"]').forEach(link => {
-            link.addEventListener('click', function() {
-                trackEvent('click', 'email', this.href);
+            // Tracking des emails
+            document.querySelectorAll('a[href^="mailto:"]').forEach(link => {
+                link.addEventListener('click', function() {
+                    trackEvent('click', 'email', this.href);
+                });
             });
         });
 
@@ -2677,14 +2465,19 @@
         }, 2000);
 
         // Fermer les widgets en cliquant à l'extérieur
-        document.addEventListener('click', function(e) {
-            const faqWidget = document.getElementById('faqWidget');
-            const contactWidget = document.querySelector('.contact-widget');
-            
-            if (!contactWidget.contains(e.target)) {
-                faqWidget.style.display = 'none';
-            }
+        document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('click', function(e) {
+                const faqWidget = document.getElementById('faqWidget');
+                const contactWidget = document.querySelector('.contact-widget');
+                
+                if (faqWidget && contactWidget && !contactWidget.contains(e.target)) {
+                    faqWidget.style.display = 'none';
+                }
+            });
         });
+
+        // Debug console
+        console.log('🏆 You² Cabinet Bot - Version Complète et Corrigée');
     </script>
 </body>
 </html>
