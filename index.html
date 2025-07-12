@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -41,8 +42,8 @@
     <!-- Google Fonts avec display=swap pour performance -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- EmailJS pour l'envoi d'emails - URL autorisée par CSP -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/emailjs/4.0.2/email.min.js"></script>
+    <!-- EmailJS pour l'envoi d'emails -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     
     <!-- Schema.org pour SEO local -->
     <script type="application/ld+json">
@@ -2187,7 +2188,7 @@
                     botType('<p><strong>RÉCAPITULATIF :</strong></p><p>• Secteur : ' + userData.sector + '</p><p>• Budget : ' + userData.budget + '</p><p>• Délai : ' + userData.timeline + '</p><p>• Région : ' + userData.location + '</p><p>• Contact : ' + userData.name + ' (' + userData.phone + ')</p>', () => {
                         
                         setTimeout(() => {
-                            // ENVOI DE L'EMAIL via MAILTO - SANS EMAILJS
+                            // ENVOI DE L'EMAIL via EmailJS
                             sendEmailNotification(userData);
                             
                             if (userData.isUrgent) {
@@ -2229,7 +2230,7 @@
         // FONCTION D'ENVOI EMAIL via EmailJS - CORRIGÉE
         function sendEmailNotification(data) {
             // Configuration EmailJS avec VOS VRAIS CODES
-            emailjs.init('Ol1JMnZD1wrlqrDrG'); // ✅ Public Key corrigée
+            emailjs.init('Ol1JMnZD1wr1qrDrG'); // Votre Public Key
             
             const templateParams = {
                 to_email: 'directionleveo@gmail.com', // Votre email
