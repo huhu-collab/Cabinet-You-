@@ -32,7 +32,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <!-- EmailJS pour l'envoi d'emails -->
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4.3.3/dist/email.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     
     <!-- Schema.org pour SEO local -->
     <script type="application/ld+json">
@@ -1901,9 +1901,6 @@
         window.YOU2 = {
             // Configuration
             config: {
-                emailjsPublicKey: 'Ol1JMnZD1wr1qrDrG', // VOS VRAIES CLÉS
-                emailjsServiceId: 'service_j1fujkb',    // VOS VRAIES CLÉS  
-                emailjsTemplateId: 'template_tvev2lc',  // VOS VRAIES CLÉS
                 cookieAccepted: false
             },
 
@@ -2218,66 +2215,42 @@
                 return sectors[sector] || sector;
             },
 
-            // FONCTION D'ENVOI EMAIL via EmailJS - SÉCURISÉE
+            // FONCTION D'ENVOI EMAIL via EmailJS - SIMPLIFIÉE
             sendEmailNotification(data) {
-                // Vérifier que EmailJS est chargé
-                if (typeof emailjs === 'undefined') {
-                    console.error('❌ EmailJS non chargé');
-                    this.showFallbackContact();
-                    return;
-                }
+                // Configuration EmailJS directe
+                emailjs.init('Ol1JMnZD1wr1qrDrG');
+                
+                const templateParams = {
+                    to_email: 'directionleveo@gmail.com',
+                    from_name: data.name,
+                    secteur: this.getSectorFullName(data.sector),
+                    budget: data.budget,
+                    delai: data.timeline,
+                    region: data.location,
+                    nom_complet: data.name,
+                    telephone: data.phone,
+                    email_client: data.email,
+                    description_projet: data.description,
+                    urgence: data.isUrgent ? '🚨 DEMANDE URGENTE - Rappel sous 30min' : 'Demande normale',
+                    date_demande: new Date().toLocaleString('fr-FR'),
+                    subject: `${data.isUrgent ? '🚨 URGENCE' : '📝 Nouvelle demande'} You² Cabinet - ${this.getSectorFullName(data.sector)} - ${data.budget}`
+                };
 
-                // Vérifier la configuration
-                if (!this.config.emailjsPublicKey || this.config.emailjsPublicKey === 'VOTRE_VRAIE_CLE_PUBLIC_ICI') {
-                    console.error('❌ Configuration EmailJS manquante');
-                    this.showFallbackContact();
-                    return;
-                }
-
-                // Initialiser EmailJS avec la vraie clé
-                try {
-                    emailjs.init(this.config.emailjsPublicKey);
-                    
-                    const templateParams = {
-                        to_email: 'contact@you2cabinet.fr',
-                        from_name: data.name,
-                        secteur: this.getSectorFullName(data.sector),
-                        budget: data.budget,
-                        delai: data.timeline,
-                        region: data.location,
-                        nom_complet: data.name,
-                        telephone: data.phone,
-                        email_client: data.email,
-                        description_projet: data.description,
-                        urgence: data.isUrgent ? '🚨 DEMANDE URGENTE - Rappel sous 30min' : 'Demande normale',
-                        date_demande: new Date().toLocaleString('fr-FR'),
-                        subject: `${data.isUrgent ? '🚨 URGENCE' : '📝 Nouvelle demande'} You² Cabinet - ${this.getSectorFullName(data.sector)} - ${data.budget}`
-                    };
-
-                    emailjs.send(this.config.emailjsServiceId, this.config.emailjsTemplateId, templateParams)
-                        .then((response) => {
-                            console.log('✅ Email envoyé avec succès!', response.status, response.text);
-                            
-                            setTimeout(() => {
-                                YOU2.bot.botType('<p><strong>✅ Demande transmise avec succès !</strong></p><p>Vous recevrez une confirmation par email.</p>');
-                            }, 3000);
-                            
-                        })
-                        .catch((error) => {
-                            console.error('❌ Erreur lors de l\'envoi de l\'email:', error);
-                            this.showFallbackContact();
-                        });
+                emailjs.send('service_j1fujkb', 'template_tvev2lc', templateParams)
+                    .then(function(response) {
+                        console.log('✅ Email envoyé avec succès!', response.status, response.text);
                         
-                } catch (error) {
-                    console.error('❌ Erreur EmailJS:', error);
-                    this.showFallbackContact();
-                }
-            },
-
-            showFallbackContact() {
-                setTimeout(() => {
-                    YOU2.bot.botType('<p><strong>📞 Pour un traitement immédiat, appelez-nous :</strong></p><p><a href="tel:+33637469532" style="color: #D4AF37; font-weight: bold;">06 37 46 95 32</a></p>');
-                }, 3000);
+                        setTimeout(() => {
+                            YOU2.bot.botType('<p><strong>✅ Demande transmise avec succès !</strong></p><p>Vous recevrez une confirmation par email.</p>');
+                        }, 3000);
+                        
+                    }, function(error) {
+                        console.error('❌ Erreur lors de l\'envoi de l\'email:', error);
+                        
+                        setTimeout(() => {
+                            YOU2.bot.botType('<p><strong>📞 Pour un traitement immédiat, appelez-nous :</strong></p><p><a href="tel:+33637469532" style="color: #D4AF37; font-weight: bold;">06 37 46 95 32</a></p>');
+                        }, 3000);
+                    });
             },
 
             // Animation du compteur - SÉCURISÉE
