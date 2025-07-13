@@ -2215,10 +2215,16 @@
                 return sectors[sector] || sector;
             },
 
-            // FONCTION D'ENVOI EMAIL via EmailJS - SIMPLIFIÉE
+            // FONCTION D'ENVOI EMAIL via EmailJS - AVEC DEBUG
             sendEmailNotification(data) {
+                // LOGS DE DEBUG
+                console.log('🔍 DEBUG: Tentative envoi email...');
+                console.log('🔍 Public Key:', 'Ol1jMnZD1wrlqrDrG');
+                console.log('🔍 Service ID:', 'service_j1fujkb');
+                console.log('🔍 Template ID:', 'template_tvev2lc');
+                
                 // Configuration EmailJS directe
-                emailjs.init('Ol1JMnZD1wr1qrDrG');
+                emailjs.init('Ol1jMnZD1wrlqrDrG');
                 
                 const templateParams = {
                     to_email: 'directionleveo@gmail.com',
@@ -2236,6 +2242,8 @@
                     subject: `${data.isUrgent ? '🚨 URGENCE' : '📝 Nouvelle demande'} You² Cabinet - ${this.getSectorFullName(data.sector)} - ${data.budget}`
                 };
 
+                console.log('🔍 Template Params:', templateParams);
+
                 emailjs.send('service_j1fujkb', 'template_tvev2lc', templateParams)
                     .then(function(response) {
                         console.log('✅ Email envoyé avec succès!', response.status, response.text);
@@ -2245,10 +2253,12 @@
                         }, 3000);
                         
                     }, function(error) {
-                        console.error('❌ Erreur lors de l\'envoi de l\'email:', error);
+                        console.error('❌ ERREUR DÉTAILLÉE:', error);
+                        console.error('❌ Status:', error.status);
+                        console.error('❌ Text:', error.text);
                         
                         setTimeout(() => {
-                            YOU2.bot.botType('<p><strong>📞 Pour un traitement immédiat, appelez-nous :</strong></p><p><a href="tel:+33637469532" style="color: #D4AF37; font-weight: bold;">06 37 46 95 32</a></p>');
+                            YOU2.bot.botType('<p><strong>⚠️ Problème technique détecté</strong></p><p><strong>📞 Appelez directement :</strong></p><p><a href="tel:+33637469532" style="color: #D4AF37; font-weight: bold;">06 37 46 95 32</a></p>');
                         }, 3000);
                     });
             },
