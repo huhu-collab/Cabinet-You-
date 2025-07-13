@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -19,21 +18,11 @@
     <meta property="og:description" content="Intervention express avant signature. Économisez 1K€ à 75K€ sur vos achats. Gratuit si aucune économie.">
     <meta property="og:url" content="https://you2cabinet.fr">
     <meta property="og:site_name" content="You² Cabinet">
-    <meta property="og:image" content="https://you2cabinet.fr/og-image.jpg">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:title" content="You² Cabinet - Négociation express avant signature">
     <meta property="twitter:description" content="Économisez 1K€ à 75K€ sur vos achats. Intervention 24h avant signature.">
-    <meta property="twitter:image" content="https://you2cabinet.fr/twitter-image.jpg">
-    
-    <!-- Favicons -->
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     
     <!-- Preconnect pour performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -43,7 +32,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <!-- EmailJS pour l'envoi d'emails -->
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4.3.3/dist/email.min.js"></script>
     
     <!-- Schema.org pour SEO local -->
     <script type="application/ld+json">
@@ -75,28 +64,6 @@
             "@type": "AggregateRating",
             "ratingValue": "4.9",
             "reviewCount": "127"
-        },
-        "hasOfferCatalog": {
-            "@type": "OfferCatalog",
-            "name": "Services de négociation",
-            "itemListElement": [
-                {
-                    "@type": "Offer",
-                    "itemOffered": {
-                        "@type": "Service",
-                        "name": "Négociation automobile",
-                        "description": "BMW, Mercedes, Audi, Porsche - Économies 1K€ à 3K€"
-                    }
-                },
-                {
-                    "@type": "Offer",
-                    "itemOffered": {
-                        "@type": "Service",
-                        "name": "Négociation immobilier",
-                        "description": "Villas, appartements standing - Économies 6K€ à 75K€"
-                    }
-                }
-            ]
         }
     }
     </script>
@@ -188,6 +155,7 @@
             display: flex;
             list-style: none;
             gap: 2.5rem;
+            transition: all 0.3s ease;
         }
 
         .nav-links a {
@@ -225,21 +193,21 @@
             transition: 0.3s;
         }
 
-        /* Menu mobile responsive */
+        /* Menu mobile responsive - CORRIGÉ */
         @media (max-width: 768px) {
             .nav-links {
                 position: fixed;
-                top: 100%;
+                top: 80px;
                 left: 0;
                 width: 100%;
-                height: calc(100vh - 100px);
+                height: calc(100vh - 80px);
                 background: rgba(0, 0, 0, 0.95);
                 flex-direction: column;
                 justify-content: flex-start;
                 align-items: center;
                 gap: 1rem;
                 padding: 2rem;
-                transform: translateY(-100%);
+                transform: translateX(-100%);
                 opacity: 0;
                 visibility: hidden;
                 transition: all 0.3s ease;
@@ -250,7 +218,7 @@
             }
 
             .nav-links.mobile-open {
-                transform: translateY(0);
+                transform: translateX(0);
                 opacity: 1;
                 visibility: visible;
             }
@@ -600,7 +568,7 @@
             backdrop-filter: blur(10px);
         }
 
-        /* BOT CONTACT STYLES */
+        /* BOT CONTACT STYLES - CORRIGÉS */
         .bot-container {
             width: 100%;
             max-width: 900px;
@@ -1053,6 +1021,7 @@
             border-color: #ffd700 !important;
         }
 
+        /* FAQ Widget - CORRIGÉ */
         .faq-widget {
             position: absolute;
             bottom: 80px;
@@ -1068,12 +1037,14 @@
             overflow: hidden;
             transform: translateY(20px);
             opacity: 0;
+            visibility: hidden;
             transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         .faq-widget.show {
             transform: translateY(0);
             opacity: 1;
+            visibility: visible;
         }
 
         .faq-widget-header {
@@ -1317,7 +1288,7 @@
             color: rgba(255, 255, 255, 0.6);
         }
 
-        /* Cookie Banner */
+        /* Cookie Banner - CORRIGÉ */
         .cookie-banner {
             position: fixed;
             bottom: 0;
@@ -1331,10 +1302,12 @@
             -webkit-backdrop-filter: blur(20px);
             transform: translateY(100%);
             transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            display: none;
         }
         
         .cookie-banner.show {
             transform: translateY(0);
+            display: block;
         }
         
         .cookie-content {
@@ -1387,7 +1360,7 @@
             transform: translateY(-1px);
         }
 
-        /* Responsive */
+        /* Responsive - AMÉLIORÉ */
         @media (max-width: 768px) {
             .hero h1 {
                 font-size: 2.5rem;
@@ -1461,6 +1434,12 @@
             .bot-title {
                 font-size: 1.5rem;
             }
+
+            .cookie-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
         }
 
         /* Performance pour grands écrans */
@@ -1513,8 +1492,8 @@
                 <a href="#cgv">En savoir plus</a>
             </div>
             <div class="cookie-buttons">
-                <button class="cookie-btn decline" onclick="declineCookies()">Refuser</button>
-                <button class="cookie-btn accept" onclick="acceptCookies()">Accepter</button>
+                <button class="cookie-btn decline" onclick="YOU2.declineCookies()">Refuser</button>
+                <button class="cookie-btn accept" onclick="YOU2.acceptCookies()">Accepter</button>
             </div>
         </div>
     </div>
@@ -1536,7 +1515,7 @@
                 <li><a href="#cgv" aria-label="Conditions générales">CGV</a></li>
             </ul>
             <!-- Menu mobile burger -->
-            <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Menu mobile" aria-expanded="false">
+            <button class="mobile-menu-btn" onclick="YOU2.toggleMobileMenu()" aria-label="Menu mobile" aria-expanded="false">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -1556,7 +1535,7 @@
                     <div class="counter-label">économisés cette année pour nos clients</div>
                 </div>
 
-                <a href="#contact" class="cta-primary" onclick="trackEvent('cta_click', 'hero', 'consultation_express')" aria-label="Commencer une consultation express">
+                <a href="#contact" class="cta-primary" onclick="YOU2.trackEvent('cta_click', 'hero', 'consultation_express')" aria-label="Commencer une consultation express">
                     CONSULTATION EXPRESS
                 </a>
                 
@@ -1613,13 +1592,7 @@
                 </div>
             </div>
 
-            <div style="text-align: center; padding: 2rem; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 16px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); position: relative; overflow: hidden;" 
-                 onmouseover="this.style.transform='translateY(-8px)'; this.style.borderColor='#D4AF37'; this.style.boxShadow='0 0 40px rgba(212, 175, 55, 0.4), 0 20px 40px rgba(0, 0, 0, 0.3)';" 
-                 onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='rgba(212, 175, 55, 0.3)'; this.style.boxShadow='none';">
-                
-                <div style="position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent); transition: left 0.6s ease; pointer-events: none;"
-                     onmouseover="this.style.left='100%';" onmouseout="this.style.left='-100%';"></div>
-                
+            <div class="service-card" style="text-align: center;">
                 <h3 style="color: #ffffff; margin-bottom: 1rem;">POURQUOI NOUS FAIRE CONFIANCE ?</h3>
                 <p style="font-size: 1.1rem; color: rgba(255,255,255,0.9); margin-bottom: 1rem;">
                     <strong>18 années d'expérience</strong> dans la vente automobile, transaction immobilière et rénovation
@@ -1676,7 +1649,7 @@
                         <span style="color: #D4AF37;">✓</span> Résultats garantis ou gratuit
                     </p>
                 </div>
-                <a href="#contact" class="cta-primary" onclick="trackEvent('cta_click', 'guarantee', 'pourquoi_pas_vous')">POURQUOI PAS VOUS ?</a>
+                <a href="#contact" class="cta-primary" onclick="YOU2.trackEvent('cta_click', 'guarantee', 'pourquoi_pas_vous')">POURQUOI PAS VOUS ?</a>
             </div>
         </section>
 
@@ -1741,16 +1714,16 @@
                     </div>
 
                     <div class="quick-replies" id="quickReplies">
-                        <div class="quick-reply" onclick="selectSector('automobile')">
+                        <div class="quick-reply" onclick="YOU2.bot.selectSector('automobile')">
                             <strong>AUTO</strong>
                         </div>
-                        <div class="quick-reply" onclick="selectSector('immobilier')">
+                        <div class="quick-reply" onclick="YOU2.bot.selectSector('immobilier')">
                             <strong>IMMO</strong>
                         </div>
-                        <div class="quick-reply" onclick="selectSector('renovation')">
+                        <div class="quick-reply" onclick="YOU2.bot.selectSector('renovation')">
                             <strong>RENO</strong>
                         </div>
-                        <div class="quick-reply" onclick="selectSector('moto')">
+                        <div class="quick-reply" onclick="YOU2.bot.selectSector('moto')">
                             <strong>MOTO</strong>
                         </div>
                     </div>
@@ -1758,7 +1731,7 @@
                     <div class="chat-input-container" id="chatInputContainer">
                         <div class="chat-input-wrapper">
                             <input type="text" id="chatInput" class="chat-input" placeholder="Tapez votre réponse..." maxlength="200">
-                            <button class="send-btn" onclick="sendMessage()">Envoyer</button>
+                            <button class="send-btn" onclick="YOU2.bot.sendMessage()">Envoyer</button>
                         </div>
                     </div>
                 </div>
@@ -1816,26 +1789,26 @@
     <!-- Contact Widget avec FAQ intégrée -->
     <div class="contact-widget" role="complementary" aria-label="Widget de contact">
         <div class="contact-buttons">
-            <a href="tel:+33637469532" class="contact-btn call-btn" onclick="trackEvent('contact_click', 'widget', 'phone')" aria-label="Appeler You²">
+            <a href="tel:+33637469532" class="contact-btn call-btn" onclick="YOU2.trackEvent('contact_click', 'widget', 'phone')" aria-label="Appeler You²">
                 Appeler
             </a>
-            <a href="#contact" class="contact-btn rdv-btn" onclick="trackEvent('contact_click', 'widget', 'rdv')" aria-label="Prendre rendez-vous">
+            <a href="#contact" class="contact-btn rdv-btn" onclick="YOU2.trackEvent('contact_click', 'widget', 'rdv')" aria-label="Prendre rendez-vous">
                 RDV
             </a>
-            <button class="contact-btn faq-btn" onclick="toggleFaqWidget()" aria-label="Assistant bot">
+            <button class="contact-btn faq-btn" onclick="YOU2.toggleFaqWidget()" aria-label="Assistant bot">
                 Bot
             </button>
         </div>
         
         <!-- FAQ Widget -->
-        <div class="faq-widget" id="faqWidget" style="display: none;">
+        <div class="faq-widget" id="faqWidget">
             <div class="faq-widget-header">
                 <div style="width: 40px; height: 40px; background: #D4AF37; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #000000; font-weight: bold;">AI</div>
                 <div>
                     <h4>Assistant You²</h4>
                     <p>Disponible 24h/24</p>
                 </div>
-                <button onclick="toggleFaqWidget()" style="background: none; border: none; color: #ffffff; font-size: 1.5rem; margin-left: auto; cursor: pointer; padding: 0.5rem; font-weight: bold;">×</button>
+                <button onclick="YOU2.toggleFaqWidget()" style="background: none; border: none; color: #ffffff; font-size: 1.5rem; margin-left: auto; cursor: pointer; padding: 0.5rem; font-weight: bold;">×</button>
             </div>
             
             <div class="faq-chat-messages" id="faqChatMessages">
@@ -1855,28 +1828,28 @@
             </div>
             
             <div class="quick-questions">
-                <div class="quick-question" onclick="addBotConversation('Comment garantissez-vous des économies ?', 'Nous intervenons uniquement dans des secteurs où nous avons développé une expertise pointue et des relations privilégiées. Notre expérience nous permet d\'identifier rapidement les marges de négociation disponibles.')">
+                <div class="quick-question" onclick="YOU2.addBotConversation('Comment garantissez-vous des économies ?', 'Nous intervenons uniquement dans des secteurs où nous avons développé une expertise pointue et des relations privilégiées. Notre expérience nous permet d\'identifier rapidement les marges de négociation disponibles.')">
                     Comment garantissez-vous des économies ?
                 </div>
-                <div class="quick-question" onclick="addBotConversation('24h avant signature, n\'est-ce pas trop tard ?', 'Au contraire ! C\'est le moment optimal. Le vendeur sait que vous êtes décidé et sera plus enclin à faire un effort final plutôt que de risquer de perdre la vente.')">
+                <div class="quick-question" onclick="YOU2.addBotConversation('24h avant signature, n\'est-ce pas trop tard ?', 'Au contraire ! C\'est le moment optimal. Le vendeur sait que vous êtes décidé et sera plus enclin à faire un effort final plutôt que de risquer de perdre la vente.')">
                     24h avant signature, n'est-ce pas trop tard ?
                 </div>
-                <div class="quick-question" onclick="addBotConversation('Que se passe-t-il si aucune économie ?', 'C\'est simple : notre intervention est 100% gratuite. Nous ne facturons que si nous obtenons des économies concrètes pour vous.')">
+                <div class="quick-question" onclick="YOU2.addBotConversation('Que se passe-t-il si aucune économie ?', 'C\'est simple : notre intervention est 100% gratuite. Nous ne facturons que si nous obtenons des économies concrètes pour vous.')">
                     Que se passe-t-il si aucune économie ?
                 </div>
-                <div class="quick-question" onclick="addBotConversation('Combien de temps prend l\'intervention ?', 'Généralement entre 2 à 8 heures selon la complexité du dossier. Nous nous adaptons à vos contraintes de délai.')">
+                <div class="quick-question" onclick="YOU2.addBotConversation('Combien de temps prend l\'intervention ?', 'Généralement entre 2 à 8 heures selon la complexité du dossier. Nous nous adaptons à vos contraintes de délai.')">
                     Combien de temps prend l'intervention ?
                 </div>
-                <div class="quick-question" onclick="addBotConversation('Intervenez-vous partout en France ?', 'Oui, nous intervenons sur tout le territoire français. La plupart de nos négociations se font par téléphone et email, avec votre accord préalable.')">
+                <div class="quick-question" onclick="YOU2.addBotConversation('Intervenez-vous partout en France ?', 'Oui, nous intervenons sur tout le territoire français. La plupart de nos négociations se font par téléphone et email, avec votre accord préalable.')">
                     Intervenez-vous partout en France ?
                 </div>
-                <div class="quick-question" onclick="addBotConversation('Quelle est votre expérience ?', '18 années d\'expérience terrain : ex-vendeur automobile professionnel, ancien marchand de biens agréé, expert en négociation rénovation. Plus de 1000 négociations menées avec un taux de réussite de 95%.')">
+                <div class="quick-question" onclick="YOU2.addBotConversation('Quelle est votre expérience ?', '18 années d\'expérience terrain : ex-vendeur automobile professionnel, ancien marchand de biens agréé, expert en négociation rénovation. Plus de 1000 négociations menées avec un taux de réussite de 95%.')">
                     Quelle est votre expérience ?
                 </div>
-                <div class="quick-question" onclick="addBotConversation('Comment maîtrisez-vous les marges ?', 'Nous connaissons précisément les coûts réels, les seuils de rentabilité vendeur et les prix plancher par secteur. Cette connaissance nous permet d\'identifier instantanément les marges de négociation disponibles.')">
+                <div class="quick-question" onclick="YOU2.addBotConversation('Comment maîtrisez-vous les marges ?', 'Nous connaissons précisément les coûts réels, les seuils de rentabilité vendeur et les prix plancher par secteur. Cette connaissance nous permet d\'identifier instantanément les marges de négociation disponibles.')">
                     Comment maîtrisez-vous les marges ?
                 </div>
-                <div class="quick-question" onclick="addBotConversation('Quels sont vos chiffres de réussite ?', '847 000€ économisés pour nos clients cette année, plus de 1000 négociations menées, 95% de taux de réussite, intervention sous 2h maximum. Nous ne sommes pas des amateurs mais de vrais professionnels.')">
+                <div class="quick-question" onclick="YOU2.addBotConversation('Quels sont vos chiffres de réussite ?', '847 000€ économisés pour nos clients cette année, plus de 1000 négociations menées, 95% de taux de réussite, intervention sous 2h maximum. Nous ne sommes pas des amateurs mais de vrais professionnels.')">
                     Quels sont vos chiffres de réussite ?
                 </div>
             </div>
@@ -1924,561 +1897,632 @@
     </footer>
 
     <script>
-        // Bot Contact Variables
-        let currentStep = 1;
-        let userData = {};
-        let isTyping = false;
+        // NAMESPACE GLOBAL POUR ÉVITER LES CONFLITS - CORRIGÉ
+        window.YOU2 = {
+            // Configuration
+            config: {
+                emailjsPublicKey: 'VOTRE_VRAIE_CLE_PUBLIC_ICI', // ⚠️ À REMPLACER
+                emailjsServiceId: 'VOTRE_SERVICE_ID_ICI',       // ⚠️ À REMPLACER  
+                emailjsTemplateId: 'VOTRE_TEMPLATE_ID_ICI',    // ⚠️ À REMPLACER
+                cookieAccepted: false
+            },
 
-        const steps = {
-            1: { title: 'Secteur d\'intervention', progress: 12 },
-            2: { title: 'Budget prévu', progress: 25 },
-            3: { title: 'Délai avant signature', progress: 37 },
-            4: { title: 'Localisation', progress: 50 },
-            5: { title: 'Nom complet', progress: 62 },
-            6: { title: 'Numéro de téléphone', progress: 75 },
-            7: { title: 'Adresse email', progress: 87 },
-            8: { title: 'Description du projet', progress: 100 }
-        };
-
-        function updateProgress() {
-            const indicator = document.getElementById('stepIndicator');
-            const progressFill = document.getElementById('progressFill');
-            
-            indicator.textContent = `Étape ${currentStep}/8 - ${steps[currentStep].title}`;
-            progressFill.style.width = `${steps[currentStep].progress}%`;
-        }
-
-        function scrollToBottom() {
-            const chatMessages = document.getElementById('chatMessages');
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        function showTyping() {
-            if (isTyping) return;
-            isTyping = true;
-            document.getElementById('typingIndicator').style.display = 'block';
-            scrollToBottom();
-        }
-
-        function hideTyping() {
-            isTyping = false;
-            document.getElementById('typingIndicator').style.display = 'none';
-        }
-
-        function addMessage(content, isUser = false) {
-            const chatMessages = document.getElementById('chatMessages');
-            const typingIndicator = document.getElementById('typingIndicator');
-            
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
-            
-            messageDiv.innerHTML = `
-                <div class="message-avatar">${isUser ? 'V' : 'Y²'}</div>
-                <div class="message-content">
-                    ${content}
-                </div>
-            `;
-            
-            chatMessages.insertBefore(messageDiv, typingIndicator);
-            scrollToBottom();
-        }
-
-        function botType(message, callback = null) {
-            showTyping();
-            setTimeout(() => {
-                hideTyping();
-                addMessage(message);
-                if (callback) callback();
-            }, 1500 + Math.random() * 1000);
-        }
-
-        function showQuickReplies(replies) {
-            const quickReplies = document.getElementById('quickReplies');
-            quickReplies.innerHTML = '';
-            
-            replies.forEach(reply => {
-                const button = document.createElement('div');
-                button.className = 'quick-reply';
-                button.innerHTML = reply.html;
-                button.onclick = reply.action;
-                quickReplies.appendChild(button);
-            });
-            
-            quickReplies.style.display = 'flex';
-            document.getElementById('chatInputContainer').style.display = 'none';
-        }
-
-        function showChatInput(placeholder = "Tapez votre réponse...") {
-            document.getElementById('quickReplies').style.display = 'none';
-            document.getElementById('chatInputContainer').style.display = 'block';
-            const input = document.getElementById('chatInput');
-            input.placeholder = placeholder;
-            input.focus();
-        }
-
-        function selectSector(sector) {
-            const sectorNames = {
-                'automobile': 'Automobile (BMW, Mercedes, Audi, Porsche)',
-                'immobilier': 'Immobilier (Villas, appartements)',
-                'renovation': 'Rénovation (Cuisines, salles de bains)',
-                'moto': 'Moto (Harley, BMW, Ducati, Indian)'
-            };
-            
-            userData.sector = sector;
-            addMessage(`<p><strong>${sectorNames[sector]}</strong></p>`, true);
-            
-            currentStep = 2;
-            updateProgress();
-            
-            botType('<p><strong>Excellent choix !</strong> Notre expertise dans ce secteur nous permet d\'identifier rapidement les marges de négociation.</p><p><strong>Quel est votre budget prévu exact ?</strong></p><p>Indiquez le montant précis pour que notre expert puisse adapter sa stratégie de négociation.</p>', () => {
-                showChatInput("Ex: 25000, 45000, 350000...");
-            });
-        }
-
-        function sendMessage() {
-            const input = document.getElementById('chatInput');
-            const message = input.value.trim();
-            
-            if (!message) return;
-            
-            addMessage(`<p><strong>${message}</strong></p>`, true);
-            input.value = '';
-            
-            processUserInput(message);
-        }
-
-        function processUserInput(message) {
-            switch(currentStep) {
-                case 1:
-                    // Secteur (début du bot)
-                    let sector = '';
-                    let sectorName = '';
-                    
-                    if (message === '1' || message.toLowerCase().includes('automobile') || message.toLowerCase().includes('auto')) {
-                        sector = 'automobile';
-                        sectorName = 'Automobile (BMW, Mercedes, Audi, Porsche)';
-                    } else if (message === '2' || message.toLowerCase().includes('immobilier') || message.toLowerCase().includes('maison') || message.toLowerCase().includes('appartement')) {
-                        sector = 'immobilier';
-                        sectorName = 'Immobilier (Villas, appartements)';
-                    } else if (message === '3' || message.toLowerCase().includes('renovation') || message.toLowerCase().includes('cuisine') || message.toLowerCase().includes('travaux')) {
-                        sector = 'renovation';
-                        sectorName = 'Rénovation (Cuisines, salles de bains)';
-                    } else if (message === '4' || message.toLowerCase().includes('moto') || message.toLowerCase().includes('harley') || message.toLowerCase().includes('ducati')) {
-                        sector = 'moto';
-                        sectorName = 'Moto (Harley, BMW, Ducati, Indian)';
-                    } else {
-                        botType('<p><strong>Choix non reconnu.</strong></p><p>Tapez <strong>1</strong> pour Automobile, <strong>2</strong> pour Immobilier, <strong>3</strong> pour Rénovation ou <strong>4</strong> pour Moto.</p>', () => {
-                            showChatInput("Tapez 1, 2, 3 ou 4...");
-                        });
-                        return;
-                    }
-                    
-                    userData.sector = sector;
-                    currentStep = 2;
-                    updateProgress();
-                    
-                    botType('<p><strong>Excellent choix !</strong> Secteur sélectionné : ' + sectorName + '</p><p><strong>Quel est votre budget prévu exact ?</strong></p><p>Indiquez le montant précis pour que notre expert puisse adapter sa stratégie de négociation.</p>', () => {
-                        showChatInput("Ex: 25000, 45000, 350000...");
-                    });
-                    break;
-
-                case 2:
-                    // Budget
-                    const budgetText = message.replace(/[^\d]/g, '');
-                    const budgetNumber = parseInt(budgetText);
-                    
-                    if (!budgetText || budgetText.length === 0 || isNaN(budgetNumber) || budgetNumber < 100) {
-                        botType('<p><strong>Le budget semble incorrect.</strong></p><p>Pouvez-vous indiquer le montant en euros ?</p>', () => {
-                            showChatInput("Ex: 25000, 45000, 350000...");
-                        });
-                        return;
-                    }
-                    
-                    userData.budget = budgetNumber.toLocaleString('fr-FR') + '€';
-                    currentStep = 3;
-                    updateProgress();
-                    
-                    botType('<p><strong>Parfait !</strong> Budget noté : ' + userData.budget + '</p><p><strong>Dans combien de temps prévoyez-vous de signer ?</strong></p>', () => {
-                        showChatInput("Ex: 24h, 2 jours, cette semaine...");
-                    });
-                    break;
-
-                case 3:
-                    // Délai
-                    userData.timeline = message;
-                    
-                    if (message.toLowerCase().includes('24h') || message.toLowerCase().includes('demain') || message.toLowerCase().includes('urgent')) {
-                        userData.isUrgent = true;
-                    }
-                    
-                    currentStep = 4;
-                    updateProgress();
-                    
-                    let urgencyMsg = userData.isUrgent ? '<p><strong style="color: #D4AF37;">URGENCE DÉTECTÉE !</strong></p>' : '';
-                    
-                    botType(urgencyMsg + '<p><strong>Dans quelle région vous trouvez-vous ?</strong></p>', () => {
-                        showChatInput("Ex: Paris, Lyon, Marseille...");
-                    });
-                    break;
-
-                case 4:
-                    // Localisation
-                    userData.location = message;
-                    currentStep = 5;
-                    updateProgress();
-                    
-                    botType('<p><strong>Quel est votre nom complet ?</strong></p>', () => {
-                        showChatInput("Ex: Jean Dupont");
-                    });
-                    break;
-
-                case 5:
-                    // Nom
-                    userData.name = message;
-                    currentStep = 6;
-                    updateProgress();
-                    
-                    botType('<p><strong>Quel est votre numéro de téléphone ?</strong></p>', () => {
-                        showChatInput("Ex: 06 12 34 56 78");
-                    });
-                    break;
-
-                case 6:
-                    // Téléphone
-                    if (!/^(?:\+33|0)[1-9](?:[0-9]{8})$/.test(message.replace(/\s/g, ''))) {
-                        botType('<p><strong>Numéro incorrect.</strong></p><p>Format attendu : 06 12 34 56 78</p>', () => {
-                            showChatInput("Ex: 06 12 34 56 78");
-                        });
-                        return;
-                    }
-                    
-                    userData.phone = message;
-                    currentStep = 7;
-                    updateProgress();
-                    
-                    botType('<p><strong>Votre adresse email ?</strong></p>', () => {
-                        showChatInput("Ex: jean.dupont@email.com");
-                    });
-                    break;
-
-                case 7:
-                    // Email
-                    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(message)) {
-                        botType('<p><strong>Email incorrect.</strong></p><p>Vérifiez le format</p>', () => {
-                            showChatInput("Ex: jean.dupont@email.com");
-                        });
-                        return;
-                    }
-                    
-                    userData.email = message;
-                    currentStep = 8;
-                    updateProgress();
-                    
-                    botType('<p><strong>Décrivez votre projet :</strong></p><p>Que voulez-vous acheter ? Qui est le vendeur ? Où en êtes-vous ?</p>', () => {
-                        showChatInput("Décrivez votre projet...");
-                    });
-                    break;
-
-                case 8:
-                    // Description finale
-                    userData.description = message;
-                    document.getElementById('chatInputContainer').style.display = 'none';
-                    
-                    // Récapitulatif
-                    botType('<p><strong>RÉCAPITULATIF :</strong></p><p>• Secteur : ' + userData.sector + '</p><p>• Budget : ' + userData.budget + '</p><p>• Délai : ' + userData.timeline + '</p><p>• Région : ' + userData.location + '</p><p>• Contact : ' + userData.name + ' (' + userData.phone + ')</p>', () => {
-                        
-                        setTimeout(() => {
-                            // ENVOI DE L'EMAIL via EmailJS
-                            sendEmailNotification(userData);
-                            
-                            if (userData.isUrgent) {
-                                botType('<p><strong>⚡ URGENCE !</strong></p><p>Notre expert va vous appeler dans les 30 minutes.</p><p>Gardez votre téléphone à portée !</p>');
-                            } else {
-                                botType('<p><strong>À BIENTÔT ' + userData.name.split(' ')[0].toUpperCase() + ' !</strong></p><p>Notre expert va vous recontacter rapidement.</p>');
-                            }
-                        }, 1500);
-                    });
-                    
-                    console.log('Données collectées:', userData);
-                    break;
-            }
-        }
-
-        function showFinalOptions(isUrgent) {
-            showQuickReplies([
-                { 
-                    html: '<strong>NOUVELLE DEMANDE</strong>',
-                    action: () => {
-                        resetBot();
-                    }
-                }
-            ]);
-        }
-
-        function resetBot() {
-            addMessage('<p><strong>Nouveau projet</strong></p>', true);
-            userData = {};
-            currentStep = 1;
-            updateProgress();
-            
-            botType('<p><strong>Nouveau projet ?</strong></p><p><strong>Dans quel secteur cette fois ?</strong></p>', () => {
-                document.getElementById('quickReplies').style.display = 'grid';
-                document.getElementById('chatInputContainer').style.display = 'none';
-            });
-        }
-
-        // FONCTION D'ENVOI EMAIL via EmailJS - CORRIGÉE
-        function sendEmailNotification(data) {
-            // Configuration EmailJS avec VOS VRAIS CODES
-            emailjs.init('Ol1JMnZD1wr1qrDrG'); // Votre Public Key
-            
-            const templateParams = {
-                to_email: 'directionleveo@gmail.com', // Votre email
-                from_name: data.name,
-                secteur: getSectorFullName(data.sector),
-                budget: data.budget,
-                delai: data.timeline,
-                region: data.location,
-                nom_complet: data.name,
-                telephone: data.phone,
-                email_client: data.email,
-                description_projet: data.description,
-                urgence: data.isUrgent ? '🚨 DEMANDE URGENTE - Rappel sous 30min' : 'Demande normale',
-                date_demande: new Date().toLocaleString('fr-FR'),
-                subject: `${data.isUrgent ? '🚨 URGENCE' : '📝 Nouvelle demande'} You² Cabinet - ${getSectorFullName(data.sector)} - ${data.budget}`
-            };
-
-            emailjs.send('service_j1fujkb', 'template_tvev2lc', templateParams)
-                .then(function(response) {
-                    console.log('✅ Email envoyé avec succès!', response.status, response.text);
-                    
-                    // Notification de confirmation dans le bot
-                    setTimeout(() => {
-                        botType('<p><strong>✅ Demande transmise avec succès !</strong></p><p>Vous recevrez une confirmation par email.</p>');
-                    }, 3000);
-                    
-                }, function(error) {
-                    console.error('❌ Erreur lors de l\'envoi de l\'email:', error);
-                    
-                    // En cas d'erreur, afficher un message alternatif
-                    setTimeout(() => {
-                        botType('<p><strong>📞 Pour un traitement immédiat, appelez-nous :</strong></p><p><a href="tel:+33637469532" style="color: #D4AF37; font-weight: bold;">06 37 46 95 32</a></p>');
-                    }, 3000);
-                });
-        }
-
-        // Fonction utilitaire pour les noms complets des secteurs
-        function getSectorFullName(sector) {
-            const sectors = {
-                'automobile': 'Automobile (BMW, Mercedes, Audi, Porsche)',
-                'immobilier': 'Immobilier (Villas, appartements standing)',
-                'renovation': 'Rénovation (Cuisines, salles de bains)',
-                'moto': 'Moto (Harley, BMW, Ducati, Indian)'
-            };
-            return sectors[sector] || sector;
-        }
-
-        // Animation du compteur
-        function animateCounter() {
-            const counter = document.getElementById('totalSavings');
-            const target = 847293;
-            let current = 0;
-            const increment = target / 150;
-            const timer = setInterval(() => {
-                current += increment;
-                if (current >= target) {
-                    current = target;
-                    clearInterval(timer);
-                }
-                counter.textContent = Math.floor(current).toLocaleString('fr-FR') + ' €';
-            }, 20);
-        }
-
-        // Démarrage de l'animation au chargement
-        window.addEventListener('load', () => {
-            // Retirer la classe preload-animations pour activer les animations
-            document.body.classList.remove('preload-animations');
-            // Démarrer l'animation du compteur
-            animateCounter();
-            // Initialiser le bot
-            updateProgress();
-            // Afficher les boutons de secteur dès le début
-            document.getElementById('quickReplies').style.display = 'grid';
-            document.getElementById('chatInputContainer').style.display = 'none';
-            
-            // Fermer le menu mobile en cliquant sur un lien
-            const navLinks = document.querySelectorAll('.nav-links a');
-            navLinks.forEach(link => {
-                link.addEventListener('click', function() {
-                    const navLinksContainer = document.getElementById('navLinks');
-                    const menuBtn = document.querySelector('.mobile-menu-btn');
-                    
-                    if (navLinksContainer && navLinksContainer.classList.contains('mobile-open')) {
-                        navLinksContainer.classList.remove('mobile-open');
-                        if (menuBtn) {
-                            menuBtn.classList.remove('active');
-                            menuBtn.setAttribute('aria-expanded', 'false');
-                        }
-                    }
-                });
-            });
-        });
-
-        // Gestion de l'entrée avec Entrée
-        document.addEventListener('DOMContentLoaded', function() {
-            const chatInput = document.getElementById('chatInput');
-            if (chatInput) {
-                chatInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        sendMessage();
-                    }
-                });
-            }
-        });
-
-        // FAQ Widget functionality
-        function toggleFaqWidget() {
-            const widget = document.getElementById('faqWidget');
-            if (widget.style.display === 'block') {
-                widget.classList.remove('show');
-                setTimeout(() => {
-                    widget.style.display = 'none';
-                }, 300);
-            } else {
-                widget.style.display = 'block';
-                setTimeout(() => {
-                    widget.classList.add('show');
-                }, 10);
-            }
-        }
-
-        function addBotConversation(question, answer) {
-            const messagesContainer = document.getElementById('faqChatMessages');
-            const typingIndicator = document.getElementById('faqTypingIndicator');
-            
-            // Add user message
-            const userMessage = document.createElement('div');
-            userMessage.className = 'faq-message user';
-            userMessage.innerHTML = `
-                <div class="faq-message-content">
-                    ${question}
-                </div>
-            `;
-            messagesContainer.insertBefore(userMessage, typingIndicator);
-            
-            // Show typing indicator
-            typingIndicator.style.display = 'block';
-            
-            // Scroll to bottom
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            
-            // Simulate typing delay and show response
-            setTimeout(() => {
-                typingIndicator.style.display = 'none';
+            // Bot de contact
+            bot: {
+                currentStep: 1,
+                userData: {},
+                isTyping: false,
                 
-                const botMessage = document.createElement('div');
-                botMessage.className = 'faq-message bot';
-                botMessage.innerHTML = `
+                steps: {
+                    1: { title: 'Secteur d\'intervention', progress: 12 },
+                    2: { title: 'Budget prévu', progress: 25 },
+                    3: { title: 'Délai avant signature', progress: 37 },
+                    4: { title: 'Localisation', progress: 50 },
+                    5: { title: 'Nom complet', progress: 62 },
+                    6: { title: 'Numéro de téléphone', progress: 75 },
+                    7: { title: 'Adresse email', progress: 87 },
+                    8: { title: 'Description du projet', progress: 100 }
+                },
+
+                updateProgress() {
+                    const indicator = document.getElementById('stepIndicator');
+                    const progressFill = document.getElementById('progressFill');
+                    
+                    if (indicator && progressFill) {
+                        indicator.textContent = `Étape ${this.currentStep}/8 - ${this.steps[this.currentStep].title}`;
+                        progressFill.style.width = `${this.steps[this.currentStep].progress}%`;
+                    }
+                },
+
+                scrollToBottom() {
+                    const chatMessages = document.getElementById('chatMessages');
+                    if (chatMessages) {
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }
+                },
+
+                showTyping() {
+                    if (this.isTyping) return;
+                    this.isTyping = true;
+                    const typingIndicator = document.getElementById('typingIndicator');
+                    if (typingIndicator) {
+                        typingIndicator.style.display = 'block';
+                        this.scrollToBottom();
+                    }
+                },
+
+                hideTyping() {
+                    this.isTyping = false;
+                    const typingIndicator = document.getElementById('typingIndicator');
+                    if (typingIndicator) {
+                        typingIndicator.style.display = 'none';
+                    }
+                },
+
+                addMessage(content, isUser = false) {
+                    const chatMessages = document.getElementById('chatMessages');
+                    const typingIndicator = document.getElementById('typingIndicator');
+                    
+                    if (!chatMessages || !typingIndicator) return;
+                    
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+                    
+                    messageDiv.innerHTML = `
+                        <div class="message-avatar">${isUser ? 'V' : 'Y²'}</div>
+                        <div class="message-content">
+                            ${content}
+                        </div>
+                    `;
+                    
+                    chatMessages.insertBefore(messageDiv, typingIndicator);
+                    this.scrollToBottom();
+                },
+
+                botType(message, callback = null) {
+                    this.showTyping();
+                    setTimeout(() => {
+                        this.hideTyping();
+                        this.addMessage(message);
+                        if (callback) callback();
+                    }, 1500 + Math.random() * 1000);
+                },
+
+                showQuickReplies(replies) {
+                    const quickReplies = document.getElementById('quickReplies');
+                    if (!quickReplies) return;
+                    
+                    quickReplies.innerHTML = '';
+                    
+                    replies.forEach(reply => {
+                        const button = document.createElement('div');
+                        button.className = 'quick-reply';
+                        button.innerHTML = reply.html;
+                        button.onclick = reply.action;
+                        quickReplies.appendChild(button);
+                    });
+                    
+                    quickReplies.style.display = 'flex';
+                    const chatInputContainer = document.getElementById('chatInputContainer');
+                    if (chatInputContainer) {
+                        chatInputContainer.style.display = 'none';
+                    }
+                },
+
+                showChatInput(placeholder = "Tapez votre réponse...") {
+                    const quickReplies = document.getElementById('quickReplies');
+                    const chatInputContainer = document.getElementById('chatInputContainer');
+                    const input = document.getElementById('chatInput');
+                    
+                    if (quickReplies) quickReplies.style.display = 'none';
+                    if (chatInputContainer) chatInputContainer.style.display = 'block';
+                    if (input) {
+                        input.placeholder = placeholder;
+                        input.focus();
+                    }
+                },
+
+                selectSector(sector) {
+                    const sectorNames = {
+                        'automobile': 'Automobile (BMW, Mercedes, Audi, Porsche)',
+                        'immobilier': 'Immobilier (Villas, appartements)',
+                        'renovation': 'Rénovation (Cuisines, salles de bains)',
+                        'moto': 'Moto (Harley, BMW, Ducati, Indian)'
+                    };
+                    
+                    this.userData.sector = sector;
+                    this.addMessage(`<p><strong>${sectorNames[sector]}</strong></p>`, true);
+                    
+                    this.currentStep = 2;
+                    this.updateProgress();
+                    
+                    this.botType('<p><strong>Excellent choix !</strong> Notre expertise dans ce secteur nous permet d\'identifier rapidement les marges de négociation.</p><p><strong>Quel est votre budget prévu exact ?</strong></p><p>Indiquez le montant précis pour que notre expert puisse adapter sa stratégie de négociation.</p>', () => {
+                        this.showChatInput("Ex: 25000, 45000, 350000...");
+                    });
+                },
+
+                sendMessage() {
+                    const input = document.getElementById('chatInput');
+                    if (!input) return;
+                    
+                    const message = input.value.trim();
+                    if (!message) return;
+                    
+                    this.addMessage(`<p><strong>${message}</strong></p>`, true);
+                    input.value = '';
+                    
+                    this.processUserInput(message);
+                },
+
+                processUserInput(message) {
+                    switch(this.currentStep) {
+                        case 2:
+                            // Budget - VALIDATION AMÉLIORÉE
+                            const budgetText = message.replace(/[^\d]/g, '');
+                            const budgetNumber = parseInt(budgetText);
+                            
+                            if (!budgetText || budgetText.length === 0 || isNaN(budgetNumber) || budgetNumber < 1000) {
+                                this.botType('<p><strong>Le budget semble incorrect.</strong></p><p>Pouvez-vous indiquer le montant en euros ? (minimum 1000€)</p>', () => {
+                                    this.showChatInput("Ex: 25000, 45000, 350000...");
+                                });
+                                return;
+                            }
+                            
+                            this.userData.budget = budgetNumber.toLocaleString('fr-FR') + '€';
+                            this.currentStep = 3;
+                            this.updateProgress();
+                            
+                            this.botType('<p><strong>Parfait !</strong> Budget noté : ' + this.userData.budget + '</p><p><strong>Dans combien de temps prévoyez-vous de signer ?</strong></p>', () => {
+                                this.showChatInput("Ex: 24h, 2 jours, cette semaine...");
+                            });
+                            break;
+
+                        case 3:
+                            // Délai
+                            this.userData.timeline = message;
+                            
+                            if (message.toLowerCase().includes('24h') || message.toLowerCase().includes('demain') || message.toLowerCase().includes('urgent')) {
+                                this.userData.isUrgent = true;
+                            }
+                            
+                            this.currentStep = 4;
+                            this.updateProgress();
+                            
+                            let urgencyMsg = this.userData.isUrgent ? '<p><strong style="color: #D4AF37;">URGENCE DÉTECTÉE !</strong></p>' : '';
+                            
+                            this.botType(urgencyMsg + '<p><strong>Dans quelle région vous trouvez-vous ?</strong></p>', () => {
+                                this.showChatInput("Ex: Paris, Lyon, Marseille...");
+                            });
+                            break;
+
+                        case 4:
+                            // Localisation
+                            this.userData.location = message;
+                            this.currentStep = 5;
+                            this.updateProgress();
+                            
+                            this.botType('<p><strong>Quel est votre nom complet ?</strong></p>', () => {
+                                this.showChatInput("Ex: Jean Dupont");
+                            });
+                            break;
+
+                        case 5:
+                            // Nom - VALIDATION AMÉLIORÉE
+                            if (message.length < 2) {
+                                this.botType('<p><strong>Nom trop court.</strong></p><p>Indiquez votre nom et prénom</p>', () => {
+                                    this.showChatInput("Ex: Jean Dupont");
+                                });
+                                return;
+                            }
+                            
+                            this.userData.name = message;
+                            this.currentStep = 6;
+                            this.updateProgress();
+                            
+                            this.botType('<p><strong>Quel est votre numéro de téléphone ?</strong></p>', () => {
+                                this.showChatInput("Ex: 06 12 34 56 78");
+                            });
+                            break;
+
+                        case 6:
+                            // Téléphone - REGEX CORRIGÉE
+                            const phoneRegex = /^(?:\+33|0)[1-9][\s\-\.]?(?:[0-9][\s\-\.]?){8}$/;
+                            const cleanPhone = message.replace(/[\s\-\.]/g, '');
+                            
+                            if (!phoneRegex.test(cleanPhone)) {
+                                this.botType('<p><strong>Numéro incorrect.</strong></p><p>Format attendu : 06 12 34 56 78 ou +33 6 12 34 56 78</p>', () => {
+                                    this.showChatInput("Ex: 06 12 34 56 78");
+                                });
+                                return;
+                            }
+                            
+                            this.userData.phone = message;
+                            this.currentStep = 7;
+                            this.updateProgress();
+                            
+                            this.botType('<p><strong>Votre adresse email ?</strong></p>', () => {
+                                this.showChatInput("Ex: jean.dupont@email.com");
+                            });
+                            break;
+
+                        case 7:
+                            // Email - VALIDATION AMÉLIORÉE
+                            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                            if (!emailRegex.test(message)) {
+                                this.botType('<p><strong>Email incorrect.</strong></p><p>Vérifiez le format (ex: jean@email.com)</p>', () => {
+                                    this.showChatInput("Ex: jean.dupont@email.com");
+                                });
+                                return;
+                            }
+                            
+                            this.userData.email = message;
+                            this.currentStep = 8;
+                            this.updateProgress();
+                            
+                            this.botType('<p><strong>Décrivez votre projet :</strong></p><p>Que voulez-vous acheter ? Qui est le vendeur ? Où en êtes-vous ?</p>', () => {
+                                this.showChatInput("Décrivez votre projet...");
+                            });
+                            break;
+
+                        case 8:
+                            // Description finale
+                            this.userData.description = message;
+                            const chatInputContainer = document.getElementById('chatInputContainer');
+                            if (chatInputContainer) {
+                                chatInputContainer.style.display = 'none';
+                            }
+                            
+                            // Récapitulatif
+                            this.botType('<p><strong>RÉCAPITULATIF :</strong></p><p>• Secteur : ' + YOU2.getSectorFullName(this.userData.sector) + '</p><p>• Budget : ' + this.userData.budget + '</p><p>• Délai : ' + this.userData.timeline + '</p><p>• Région : ' + this.userData.location + '</p><p>• Contact : ' + this.userData.name + ' (' + this.userData.phone + ')</p>', () => {
+                                
+                                setTimeout(() => {
+                                    // ENVOI DE L'EMAIL via EmailJS
+                                    YOU2.sendEmailNotification(this.userData);
+                                    
+                                    if (this.userData.isUrgent) {
+                                        this.botType('<p><strong>⚡ URGENCE !</strong></p><p>Notre expert va vous appeler dans les 30 minutes.</p><p>Gardez votre téléphone à portée !</p>');
+                                    } else {
+                                        this.botType('<p><strong>À BIENTÔT ' + this.userData.name.split(' ')[0].toUpperCase() + ' !</strong></p><p>Notre expert va vous recontacter rapidement.</p>');
+                                    }
+                                }, 1500);
+                            });
+                            
+                            console.log('✅ Données collectées:', this.userData);
+                            break;
+                    }
+                },
+
+                resetBot() {
+                    this.addMessage('<p><strong>Nouveau projet</strong></p>', true);
+                    this.userData = {};
+                    this.currentStep = 1;
+                    this.updateProgress();
+                    
+                    this.botType('<p><strong>Nouveau projet ?</strong></p><p><strong>Dans quel secteur cette fois ?</strong></p>', () => {
+                        const quickReplies = document.getElementById('quickReplies');
+                        const chatInputContainer = document.getElementById('chatInputContainer');
+                        if (quickReplies) quickReplies.style.display = 'grid';
+                        if (chatInputContainer) chatInputContainer.style.display = 'none';
+                    });
+                }
+            },
+
+            // Fonctions utilitaires
+            getSectorFullName(sector) {
+                const sectors = {
+                    'automobile': 'Automobile (BMW, Mercedes, Audi, Porsche)',
+                    'immobilier': 'Immobilier (Villas, appartements standing)',
+                    'renovation': 'Rénovation (Cuisines, salles de bains)',
+                    'moto': 'Moto (Harley, BMW, Ducati, Indian)'
+                };
+                return sectors[sector] || sector;
+            },
+
+            // FONCTION D'ENVOI EMAIL via EmailJS - SÉCURISÉE
+            sendEmailNotification(data) {
+                // Vérifier que EmailJS est chargé
+                if (typeof emailjs === 'undefined') {
+                    console.error('❌ EmailJS non chargé');
+                    this.showFallbackContact();
+                    return;
+                }
+
+                // Vérifier la configuration
+                if (!this.config.emailjsPublicKey || this.config.emailjsPublicKey === 'VOTRE_VRAIE_CLE_PUBLIC_ICI') {
+                    console.error('❌ Configuration EmailJS manquante');
+                    this.showFallbackContact();
+                    return;
+                }
+
+                // Initialiser EmailJS avec la vraie clé
+                try {
+                    emailjs.init(this.config.emailjsPublicKey);
+                    
+                    const templateParams = {
+                        to_email: 'contact@you2cabinet.fr',
+                        from_name: data.name,
+                        secteur: this.getSectorFullName(data.sector),
+                        budget: data.budget,
+                        delai: data.timeline,
+                        region: data.location,
+                        nom_complet: data.name,
+                        telephone: data.phone,
+                        email_client: data.email,
+                        description_projet: data.description,
+                        urgence: data.isUrgent ? '🚨 DEMANDE URGENTE - Rappel sous 30min' : 'Demande normale',
+                        date_demande: new Date().toLocaleString('fr-FR'),
+                        subject: `${data.isUrgent ? '🚨 URGENCE' : '📝 Nouvelle demande'} You² Cabinet - ${this.getSectorFullName(data.sector)} - ${data.budget}`
+                    };
+
+                    emailjs.send(this.config.emailjsServiceId, this.config.emailjsTemplateId, templateParams)
+                        .then((response) => {
+                            console.log('✅ Email envoyé avec succès!', response.status, response.text);
+                            
+                            setTimeout(() => {
+                                YOU2.bot.botType('<p><strong>✅ Demande transmise avec succès !</strong></p><p>Vous recevrez une confirmation par email.</p>');
+                            }, 3000);
+                            
+                        })
+                        .catch((error) => {
+                            console.error('❌ Erreur lors de l\'envoi de l\'email:', error);
+                            this.showFallbackContact();
+                        });
+                        
+                } catch (error) {
+                    console.error('❌ Erreur EmailJS:', error);
+                    this.showFallbackContact();
+                }
+            },
+
+            showFallbackContact() {
+                setTimeout(() => {
+                    YOU2.bot.botType('<p><strong>📞 Pour un traitement immédiat, appelez-nous :</strong></p><p><a href="tel:+33637469532" style="color: #D4AF37; font-weight: bold;">06 37 46 95 32</a></p>');
+                }, 3000);
+            },
+
+            // Animation du compteur - SÉCURISÉE
+            animateCounter() {
+                const counter = document.getElementById('totalSavings');
+                if (!counter) return;
+                
+                const target = 847293;
+                let current = 0;
+                const increment = target / 150;
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(timer);
+                    }
+                    counter.textContent = Math.floor(current).toLocaleString('fr-FR') + ' €';
+                }, 20);
+            },
+
+            // Menu mobile - CORRIGÉ
+            toggleMobileMenu() {
+                const navLinks = document.getElementById('navLinks');
+                const menuBtn = document.querySelector('.mobile-menu-btn');
+                
+                if (!navLinks || !menuBtn) return;
+                
+                navLinks.classList.toggle('mobile-open');
+                menuBtn.classList.toggle('active');
+                
+                const isExpanded = navLinks.classList.contains('mobile-open');
+                menuBtn.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+            },
+
+            // FAQ Widget - CORRIGÉ
+            toggleFaqWidget() {
+                const widget = document.getElementById('faqWidget');
+                if (!widget) return;
+                
+                const isVisible = widget.classList.contains('show');
+                
+                if (isVisible) {
+                    widget.classList.remove('show');
+                    setTimeout(() => {
+                        widget.style.display = 'none';
+                    }, 300);
+                } else {
+                    widget.style.display = 'block';
+                    setTimeout(() => {
+                        widget.classList.add('show');
+                    }, 10);
+                }
+            },
+
+            addBotConversation(question, answer) {
+                const messagesContainer = document.getElementById('faqChatMessages');
+                const typingIndicator = document.getElementById('faqTypingIndicator');
+                
+                if (!messagesContainer || !typingIndicator) return;
+                
+                // Add user message
+                const userMessage = document.createElement('div');
+                userMessage.className = 'faq-message user';
+                userMessage.innerHTML = `
                     <div class="faq-message-content">
-                        ${answer}
+                        ${question}
                     </div>
                 `;
-                messagesContainer.insertBefore(botMessage, typingIndicator);
+                messagesContainer.insertBefore(userMessage, typingIndicator);
+                
+                // Show typing indicator
+                typingIndicator.style.display = 'block';
                 
                 // Scroll to bottom
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            }, 1500);
-        }
+                
+                // Simulate typing delay and show response
+                setTimeout(() => {
+                    typingIndicator.style.display = 'none';
+                    
+                    const botMessage = document.createElement('div');
+                    botMessage.className = 'faq-message bot';
+                    botMessage.innerHTML = `
+                        <div class="faq-message-content">
+                            ${answer}
+                        </div>
+                    `;
+                    messagesContainer.insertBefore(botMessage, typingIndicator);
+                    
+                    // Scroll to bottom
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }, 1500);
+            },
 
-        // Menu mobile
-        function toggleMobileMenu() {
-            const navLinks = document.getElementById('navLinks');
-            const menuBtn = document.querySelector('.mobile-menu-btn');
-            
-            navLinks.classList.toggle('mobile-open');
-            menuBtn.classList.toggle('active');
-            
-            const isExpanded = navLinks.classList.contains('mobile-open');
-            menuBtn.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
-        }
+            // Analytics et tracking
+            trackEvent(action, category, label) {
+                console.log('📊 Event tracked:', action, category, label);
+                // Ici vous pouvez ajouter votre code Google Analytics
+                // if (typeof gtag !== 'undefined') {
+                //     gtag('event', action, { event_category: category, event_label: label });
+                // }
+            },
 
-        // Scroll smooth pour les liens d'ancrage
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const targetId = this.getAttribute('href');
-                    const target = document.querySelector(targetId);
-                    if (target) {
-                        target.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
+            // Cookie management - CORRIGÉ
+            acceptCookies() {
+                const banner = document.getElementById('cookieBanner');
+                if (banner) {
+                    banner.classList.remove('show');
+                }
+                this.config.cookieAccepted = true;
+                localStorage.setItem('you2_cookies_accepted', 'true');
+                console.log('✅ Cookies acceptés');
+            },
+
+            declineCookies() {
+                const banner = document.getElementById('cookieBanner');
+                if (banner) {
+                    banner.classList.remove('show');
+                }
+                this.config.cookieAccepted = false;
+                localStorage.setItem('you2_cookies_accepted', 'false');
+                console.log('❌ Cookies refusés');
+            },
+
+            checkCookieConsent() {
+                const consent = localStorage.getItem('you2_cookies_accepted');
+                if (consent === null) {
+                    // Afficher le banner après 2 secondes si pas de choix précédent
+                    setTimeout(() => {
+                        const banner = document.getElementById('cookieBanner');
+                        if (banner) {
+                            banner.style.display = 'block';
+                            banner.classList.add('show');
+                        }
+                    }, 2000);
+                }
+            },
+
+            // Scroll smooth pour les liens d'ancrage
+            initSmoothScroll() {
+                document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                    anchor.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        const targetId = this.getAttribute('href');
+                        const target = document.querySelector(targetId);
+                        if (target) {
+                            target.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    });
+                });
+            },
+
+            // Fermer le menu mobile en cliquant sur un lien
+            initMobileMenuClose() {
+                const navLinks = document.querySelectorAll('.nav-links a');
+                navLinks.forEach(link => {
+                    link.addEventListener('click', () => {
+                        const navLinksContainer = document.getElementById('navLinks');
+                        const menuBtn = document.querySelector('.mobile-menu-btn');
+                        
+                        if (navLinksContainer && navLinksContainer.classList.contains('mobile-open')) {
+                            navLinksContainer.classList.remove('mobile-open');
+                            if (menuBtn) {
+                                menuBtn.classList.remove('active');
+                                menuBtn.setAttribute('aria-expanded', 'false');
+                            }
+                        }
+                    });
+                });
+            },
+
+            // Fermer les widgets en cliquant à l'extérieur
+            initClickOutside() {
+                document.addEventListener('click', (e) => {
+                    const faqWidget = document.getElementById('faqWidget');
+                    const contactWidget = document.querySelector('.contact-widget');
+                    
+                    if (faqWidget && contactWidget && !contactWidget.contains(e.target)) {
+                        if (faqWidget.classList.contains('show')) {
+                            this.toggleFaqWidget();
+                        }
                     }
                 });
-            });
-        });
+            },
 
-        // Analytics et tracking
-        function trackEvent(action, category, label) {
-            console.log('Event tracked:', action, category, label);
-            // Ici vous pouvez ajouter votre code Google Analytics
-            // gtag('event', action, { category: category, label: label });
-        }
-
-        // Tracking des clics sur les CTA
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.cta-primary').forEach(button => {
-                button.addEventListener('click', function() {
-                    trackEvent('click', 'CTA', this.textContent);
-                });
-            });
-
-            // Tracking des appels téléphoniques
-            document.querySelectorAll('a[href^="tel:"]').forEach(link => {
-                link.addEventListener('click', function() {
-                    trackEvent('click', 'phone', this.href);
-                });
-            });
-
-            // Tracking des emails
-            document.querySelectorAll('a[href^="mailto:"]').forEach(link => {
-                link.addEventListener('click', function() {
-                    trackEvent('click', 'email', this.href);
-                });
-            });
-        });
-
-        // Cookie management
-        function acceptCookies() {
-            document.getElementById('cookieBanner').classList.remove('show');
-            console.log('Cookies acceptés');
-        }
-
-        function declineCookies() {
-            document.getElementById('cookieBanner').classList.remove('show');
-            console.log('Cookies refusés');
-        }
-
-        // Show cookie banner if not decided
-        setTimeout(() => {
-            document.getElementById('cookieBanner').classList.add('show');
-        }, 2000);
-
-        // Fermer les widgets en cliquant à l'extérieur
-        document.addEventListener('DOMContentLoaded', function() {
-            document.addEventListener('click', function(e) {
-                const faqWidget = document.getElementById('faqWidget');
-                const contactWidget = document.querySelector('.contact-widget');
-                
-                if (faqWidget && contactWidget && !contactWidget.contains(e.target)) {
-                    faqWidget.style.display = 'none';
+            // Gestion de l'entrée avec Entrée
+            initKeyboardEvents() {
+                const chatInput = document.getElementById('chatInput');
+                if (chatInput) {
+                    chatInput.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') {
+                            this.bot.sendMessage();
+                        }
+                    });
                 }
-            });
-        });
+            },
 
-        // Debug console
-        console.log('🏆 You² Cabinet Bot - Version Complète et Corrigée');
+            // Initialisation générale
+            init() {
+                // Retirer la classe preload-animations pour activer les animations
+                document.body.classList.remove('preload-animations');
+                
+                // Démarrer l'animation du compteur
+                this.animateCounter();
+                
+                // Initialiser le bot
+                this.bot.updateProgress();
+                
+                // Afficher les boutons de secteur dès le début
+                const quickReplies = document.getElementById('quickReplies');
+                const chatInputContainer = document.getElementById('chatInputContainer');
+                if (quickReplies) quickReplies.style.display = 'grid';
+                if (chatInputContainer) chatInputContainer.style.display = 'none';
+                
+                // Initialiser tous les événements
+                this.initSmoothScroll();
+                this.initMobileMenuClose();
+                this.initClickOutside();
+                this.initKeyboardEvents();
+                
+                // Vérifier le consentement cookies
+                this.checkCookieConsent();
+                
+                // Log de succès
+                console.log('🏆 You² Cabinet - Version Corrigée Initialisée');
+            }
+        };
+
+        // DÉMARRAGE AU CHARGEMENT DE LA PAGE - SÉCURISÉ
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => YOU2.init());
+        } else {
+            YOU2.init();
+        }
+
+        // Fallback pour window.load
+        window.addEventListener('load', () => {
+            // Double vérification que tout est initialisé
+            if (!YOU2.config.cookieAccepted) {
+                YOU2.checkCookieConsent();
+            }
+        });
     </script>
 </body>
 </html>
